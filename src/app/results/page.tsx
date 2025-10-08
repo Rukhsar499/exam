@@ -28,9 +28,9 @@ const ResultPage = () => {
         date: "06-12-2023",
         examName:
           "Combined Graduate Level Examination, 2023 (Revised Final Result)",
-        writeUp: "click here (600.07 KB)",
-        result: "click here (79.69 KB)",
-        marks: "click here (50.21 KB)",
+        writeUp: "/pdfs/writeup.pdf",
+        result: "/pdfs/result.pdf",
+        marks: "/pdfs/marks.pdf",
       },
     ],
     "Senior Teacher": [
@@ -38,18 +38,18 @@ const ResultPage = () => {
         date: "08-02-2024",
         examName:
           "Senior Teacher Eligibility Test, 2024 (Final List of Qualified Candidates)",
-        writeUp: "click here (550.12 KB)",
-        result: "click here (95.60 KB)",
-        marks: "click here (42.87 KB)",
+        writeUp: "/pdfs/writeup.pdf",
+        result: "/pdfs/result.pdf",
+        marks: "/pdfs/marks.pdf",
       },
     ],
     "Primary Teacher": [
       {
         date: "15-03-2024",
         examName: "Primary Teacher Recruitment Examination, 2024",
-        writeUp: "click here (450.50 KB)",
-        result: "click here (72.10 KB)",
-        marks: "click here (39.22 KB)",
+        writeUp: "/pdfs/writeup.pdf",
+        result: "/pdfs/result.pdf",
+        marks: "/pdfs/marks.pdf",
       },
     ],
     "Teacher-in-Charge": [
@@ -57,18 +57,18 @@ const ResultPage = () => {
         date: "05-05-2024",
         examName:
           "Teacher-in-Charge Selection Test, 2024 (List of Shortlisted Candidates)",
-        writeUp: "click here (380.80 KB)",
-        result: "click here (61.25 KB)",
-        marks: "click here (30.45 KB)",
+        writeUp: "/pdfs/writeup.pdf",
+        result: "/pdfs/result.pdf",
+        marks: "/pdfs/marks.pdf",
       },
     ],
     "Assistant Teacher": [
       {
         date: "25-07-2024",
         examName: "Assistant Teacher Examination, 2024",
-        writeUp: "click here (499.99 KB)",
-        result: "click here (84.32 KB)",
-        marks: "click here (35.18 KB)",
+        writeUp: "/pdfs/writeup.pdf",
+        result: "/pdfs/result.pdf",
+        marks: "/pdfs/marks.pdf",
       },
     ],
   };
@@ -113,14 +113,35 @@ const ResultPage = () => {
               <tr key={idx} className="hover:bg-gray-50 transition">
                 <td className="px-4 py-3">{item.date}</td>
                 <td className="px-4 py-3">{item.examName}</td>
-                <td className="px-4 py-3 text-blue-600 cursor-pointer hover:underline">
-                  {item.writeUp}
+
+                <td className="px-4 py-3">
+                  <a
+                    href={item.writeUp}
+                    download
+                    className="text-blue-600 hover:underline"
+                  >
+                    click here (600.07 KB)
+                  </a>
                 </td>
-                <td className="px-4 py-3 text-blue-600 cursor-pointer hover:underline">
-                  {item.result}
+
+                <td className="px-4 py-3">
+                  <a
+                    href={item.result}
+                    download
+                    className="text-blue-600 hover:underline"
+                  >
+                    click here (79.69 KB)
+                  </a>
                 </td>
-                <td className="px-4 py-3 text-blue-600 cursor-pointer hover:underline">
-                  {item.marks}
+
+                <td className="px-4 py-3">
+                  <a
+                    href={item.marks}
+                    download
+                    className="text-blue-600 hover:underline"
+                  >
+                    click here (50.21 KB)
+                  </a>
                 </td>
               </tr>
             ))}
