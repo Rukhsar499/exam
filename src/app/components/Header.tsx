@@ -63,15 +63,15 @@ const Header = () => {
                             <Home size={22} className="text-center"/>
                             Home
                         </a>
-                        <a href="#" className="hover:text-blue-600">
+                        <a href="/apply" className="hover:text-blue-600">
                             <BookOpen size={22} className="text-center"/>
-                            Answer Key
+                           Apply
                         </a>
-                        <a href="#" className="hover:text-blue-600">
+                        <a href="/results" className="hover:text-blue-600">
                             <FileText size={22} className="text-center"/>
                             Results
                         </a>
-                        <a href="#" className="hover:text-blue-600">
+                        <a href="/notices" className="hover:text-blue-600">
                             <Bell size={22} className="text-center"/>
                             Notifications
                         </a>
