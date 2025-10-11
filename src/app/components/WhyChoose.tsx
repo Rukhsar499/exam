@@ -7,38 +7,36 @@ export default function WhyChoose() {
     {
       icon: <BookOpen className="w-12 h-12 mx-auto mb-3 text-white" />,
       title: "Comprehensive Study Material",
-      color: "bg-blue-700",
+      color: "bg-[#1A7EBD]",
     },
     {
       icon: <GraduationCap className="w-12 h-12 mx-auto mb-3 text-white" />,
       title: "Best Integrated Teaching",
-      color: "bg-orange-500",
+       color: "bg-[#ed7900]",
     },
     {
       icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
       title: "Experienced Faculty",
-      color: "bg-blue-700",
+      color: "bg-[#1A7EBD]",
     },
     {
       icon: <Award className="w-12 h-12 mx-auto mb-3 text-white" />,
       title: "Scholarship Through N-ACST",
-      color: "bg-orange-500",
+       color: "bg-[#ed7900]",
     },
     {
-      icon: <Award className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Scholarship Through N-ACST",
-      color: "bg-orange-500",
+      icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
+      title: "Experienced Faculty",
+      color: "bg-[#1A7EBD]",
     },
   ];
 
   return (
     <section className="py-16 bg-white">
       <div className="text-center mb-10 px-4">
-        <p className="text-orange-500 font-semibold uppercase tracking-wide">
-          Always Choose The Best
-        </p>
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
-          Why Choose Narayana Coaching
+       
+        <h2 className="text-3xl md:text-4xl font-bold text-[#000]">
+         About Us
         </h2>
       </div>
 
