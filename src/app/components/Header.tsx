@@ -15,7 +15,7 @@ export default function Header() {
     // 🔹 Fetch user data from API
     const fetchUser = async () => {
       try {
-        const res = await fetch("https://api.example.com/user");
+        const res = await fetch("");
         const data = await res.json();
         setUser(data);
       } catch (error) {
@@ -27,7 +27,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-white shadow-md">
+    <header className="flex  items-center justify-between px-6 py-3 bg-white shadow-md">
       {/* Left: Logo */}
       <div className="container mx-auto">
         <div className="flex justify-between">
