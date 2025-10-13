@@ -83,9 +83,9 @@ export default function JobOpenings() {
             <p className="text-gray-700 text-sm mb-2">{job.description}</p>
             <p className="text-gray-500 text-sm mb-4"><span className="font-semibold">Qualification:</span> {job.qualification}</p>
             <div>
-            <button onClick={() => handleOpenForm(job.title)} className="mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all">
-              Apply →
-            </button>
+              <button onClick={() => handleOpenForm(job.title)} className="mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all">
+                Apply →
+              </button>
             </div>
           </div>
         ))}
@@ -98,10 +98,28 @@ export default function JobOpenings() {
             <h2 className="text-2xl font-bold mb-6 text-center">Application Form</h2>
 
             {/* Step Indicators */}
-            <div className="flex justify-between mb-6">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep === step ? "bg-blue-600 text-white" : step < currentStep ? "bg-blue-400 text-white" : "bg-orange-400 text-white"}`}>
-                  {step}
+            <div className="relative flex items-center justify-between mx-auto mb-6 px-4">
+              {[1, 2, 3].map((step, index) => (
+                <div key={step} className="flex items-center">
+                  {/* Step Circle */}
+                  <div
+                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${currentStep === step
+                        ? "bg-[#ed7900] text-white"
+                        : step < currentStep
+                          ? "bg-[#ed7900] text-white"
+                          : "bg-[#1A7EBD] text-white"
+                      }`}
+                  >
+                    {step}
+                  </div>
+
+                  {/* Line between circles (except after last one) */}
+                  {index < 2 && (
+                    <div
+                      className={`flex-1 h-[3px] w-[201px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
+                        }`}
+                    ></div>
+                  )}
                 </div>
               ))}
             </div>
@@ -109,25 +127,25 @@ export default function JobOpenings() {
             {/* Step 1 */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} className="w-full border p-2 rounded" />
-                <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="w-full border p-2 rounded" />
-                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full border p-2 rounded bg-gray-100" />
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full border p-2 rounded" />
+                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
+                <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
+                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full  p-2  bg-gray-100 text-sm  border-b border-[#0000008a]" />
+                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
               </div>
             )}
 
             {/* Step 2 */}
             {currentStep === 2 && (
               <div className="space-y-4">
-                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full border p-2 rounded" />
-                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full border p-2 rounded" />
-                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full border p-2 rounded">
+                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]" />
+                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]" />
+                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]">
                   <option value="">Highest Qualification</option>
                   <option value="High School">High School</option>
                   <option value="Bachelor’s">Bachelor’s</option>
                   <option value="Master’s">Master’s</option>
                 </select>
-                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full border p-2 rounded">
+                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]">
                   <option value="">Professional Qualification</option>
                   <option value="React">React</option>
                   <option value="Node.js">Node.js</option>
@@ -152,9 +170,9 @@ export default function JobOpenings() {
 
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-6">
-              {currentStep > 1 && <button onClick={handlePrev} className="px-4 py-2 bg-gray-300 rounded">Previous</button>}
-              {currentStep < 3 && <button onClick={handleNext} className="px-4 py-2 bg-blue-600 text-white rounded">Next</button>}
-              {currentStep === 3 && <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white rounded">Submit</button>}
+              {currentStep > 1 && <button onClick={handlePrev} className=" bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">Previous  →</button>}
+              {currentStep < 3 && <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">Next  →</button>}
+              {currentStep === 3 && <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">Submit →</button>}
             </div>
 
             {/* Close Button */}

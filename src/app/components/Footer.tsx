@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 <hr className="my-6 border-white/20" />
-                <p className="text-center text-white text-lg">
+                <p className="text-center text-white/70 text-[17px]">
                     Narayana Job Portal ©{new Date().getFullYear()} • All Rights Reserved
                 </p>
             </div>
