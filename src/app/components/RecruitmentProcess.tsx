@@ -2,61 +2,62 @@
 
 export default function RecruitmentTimeline() {
   const steps = [
-    "Application",
-    "Resume Shortlisting",
-    "Aptitude Test",
+    "Apply Online",
+    "CV Shortlisting",
+    "Take Aptitude Test",
     "Technical Interview",
-    "HR Interview",
-    "Offer Letter",
-    "Onboarding",
-    "Training",
+    "HR Discussion",
+    "Offer Issued",
+    "Join Company",
+    "Training Started",
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-white mb-[50px]">
       <div className="text-center mb-10 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#000]">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#000] pb-[50px]">
           Recruitment Process
         </h2>
-        <p className="text-gray-600 mt-2">
-          Our structured 8-step recruitment journey
-        </p>
       </div>
 
       {/* Timeline Container */}
       <div className="relative container mx-auto px-6">
         {/* Horizontal line */}
-        <div className="absolute top-1/2 left-0 w-full h-[3px] bg-gray-300 hidden md:block"></div>
+        <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gray-200 hidden md:block"></div>
 
         {/* Circles */}
-        <div className="flex flex-wrap justify-between items-center md:space-x-0">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className={`relative flex flex-col items-center text-center w-1/2 sm:w-1/3 md:w-1/8 flex-shrink-0 mb-10 md:mb-0`}
-            >
-              {/* Connector line for small screens */}
-              {index !== 0 && (
-                <div className="absolute top-[50%] left-[-50%] w-[100%] h-[2px] bg-gray-300 md:hidden"></div>
-              )}
+        <div className="flex flex-wrap justify-between items-center md:space-x-0 relative z-10 mb-[50px] mt-[70px]">
+          {steps.map((text, index) => {
+            const isEven = index % 2 === 0;
+            const circleColor = isEven ? "#1A7EBD" : "#ED7900";
 
-              {/* Circle */}
+            return (
               <div
-                className={`w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-full text-white font-semibold text-sm md:text-base shadow-md transition-transform duration-300 hover:scale-105 ${
-                  index % 2 === 0
-                    ? "bg-[#1A7EBD] md:-translate-y-10"
-                    : "bg-[#ED7900] md:translate-y-10"
-                }`}
+                key={index}
+                className="relative flex flex-col items-center text-center w-1/2 sm:w-1/4 md:w-auto mb-16 md:mb-0"
               >
-                Step {index + 1}
-              </div>
+                {/* 🔹 Small vertical line connecting circle and horizontal line */}
+                {isEven ? (
+                  // Blue circle BELOW horizontal line
+                  <div className="absolute top-1/2 w-[2px] h-10 bg-gray-300"></div>
+                ) : (
+                  // Orange circle ABOVE horizontal line
+                  <div className="absolute bottom-1/2 w-[2px] h-10 bg-gray-300"></div>
+                )}
 
-              {/* Step Label */}
-              <p className="mt-4 text-gray-800 font-medium text-sm md:text-base max-w-[100px] md:max-w-[120px]">
-                {step}
-              </p>
-            </div>
-          ))}
+                {/* Circle with text */}
+                <div
+                  className="w-20 h-20 md:w-30 md:h-30 px-4 flex items-center justify-center rounded-full text-white font-medium text-[14px] md:text-base shadow-md transition-transform duration-300 hover:scale-105"
+                  style={{
+                    backgroundColor: circleColor,
+                    transform: isEven ? "translateY(70%)" : "translateY(-70%)",
+                  }}
+                >
+                  {text}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
