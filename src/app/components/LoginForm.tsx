@@ -2,7 +2,7 @@
 
 export default function LoginForm() {
   return (
-    <form className="space-y-4">
+    <form className="space-y-4 pt-6">
       <div>
         
         <input
@@ -20,7 +20,9 @@ export default function LoginForm() {
           placeholder="Enter your password"
         />
       </div>
-
+          <p className="text-[12px] text-[#0000008a]">
+           New to Narayana Job Portal? Create an account by clicking Register
+          </p>
        <div className="text-center">
             <button type="submit" className="mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all">
               Login →

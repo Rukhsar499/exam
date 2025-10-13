@@ -22,7 +22,7 @@ export default function Banner() {
 
       {/* Right: Form Card */}
       <div className="w-full md:w-1/2 flex justify-center items-center py-10">
-        <div className="bg-white shadow-lg rounded-sm p-8 w-[90%] max-w-md">
+        <div className="bg-white shadow-lg rounded-sm p-8 w-[90%] max-w-md h-[400px]">
           {/* Toggle Header */}
           <div className="flex justify-center mb-6 border-b border-gray-300">
             <button
