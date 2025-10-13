@@ -8,7 +8,7 @@ export default function Banner() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <section className="flex flex-col md:flex-row items-center justify-between bg-[#1A7EBD]">
+    <section className="flex flex-col md:flex-row items-center justify-between bg-[#1A7EBD] h-[500px]">
       {/* Left: Banner Text */}
       <div className="w-full md:w-1/2 flex flex-col justify-start px-10 md:px-30 py-12  text-white">
         <h1 className="text-4xl font-bold mb-4">
@@ -22,7 +22,7 @@ export default function Banner() {
 
       {/* Right: Form Card */}
       <div className="w-full md:w-1/2 flex justify-center items-center py-10">
-        <div className="bg-white shadow-lg rounded-2xl p-8 w-[90%] max-w-md">
+        <div className="bg-white shadow-lg rounded-sm p-8 w-[90%] max-w-md">
           {/* Toggle Header */}
           <div className="flex justify-center mb-6 border-b border-gray-300">
             <button
