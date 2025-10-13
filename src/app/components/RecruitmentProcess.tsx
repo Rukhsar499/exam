@@ -47,7 +47,7 @@ export default function RecruitmentTimeline() {
 
                 {/* Circle with text */}
                 <div
-                  className="w-20 h-20 md:w-30 md:h-30 px-4 flex items-center justify-center rounded-full text-white font-medium text-[14px] md:text-base shadow-md transition-transform duration-300 hover:scale-105"
+                  className="w-20 h-20 md:w-30 md:h-30 px-4 flex items-center justify-center rounded-full text-white font-medium  md:text-base shadow-md transition-transform duration-300 hover:scale-105 text-[14px]"
                   style={{
                     backgroundColor: circleColor,
                     transform: isEven ? "translateY(70%)" : "translateY(-70%)",
