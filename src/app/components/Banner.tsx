@@ -8,7 +8,7 @@ export default function Banner() {
   const [isLogin, setIsLogin] = useState(true);
 
   return (
-    <section className="flex flex-col md:flex-row items-center justify-between bg-[#1A7EBD] h-[500px]">
+    <section className="flex flex-col md:flex-row items-center justify-between bg-[#1A7EBD] md:h-[500px]">
       {/* Left: Banner Text */}
       <div className="w-full md:w-1/2 flex flex-col justify-start px-10 md:px-30 py-12  text-white">
         <h1 className="text-4xl font-bold mb-4">
