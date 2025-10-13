@@ -41,7 +41,7 @@ export default function JobOpenings() {
   return (
     <section className="py-16 bg-gray-50">
       <div className="text-center mb-10 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-blue-900">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#000]">
           Current Job Openings
         </h2>
       </div>

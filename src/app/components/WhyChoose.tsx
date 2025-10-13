@@ -44,7 +44,7 @@ export default function WhyChoose() {
         {features.map((item, index) => (
           <div
             key={index}
-            className={`${item.color} text-white rounded-lg shadow-md py-10 px-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105`}
+            className={`${item.color} text-white rounded-sm shadow-md py-10 px-6 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105`}
           >
             {item.icon}
             <h3 className="text-lg font-semibold leading-snug">

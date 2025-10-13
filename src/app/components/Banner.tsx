@@ -10,12 +10,12 @@ export default function Banner() {
   return (
     <section className="flex flex-col md:flex-row items-center justify-between bg-[#1A7EBD]">
       {/* Left: Banner Text */}
-      <div className="w-full md:w-1/2 flex flex-col justify-start px-10 md:px-20 py-12  text-white">
+      <div className="w-full md:w-1/2 flex flex-col justify-start px-10 md:px-30 py-12  text-white">
         <h1 className="text-4xl font-bold mb-4">
           Welcome to <span className="text-yellow-300">Narayana Job Portal</span>
         </h1>
         <p className="text-lg text-gray-200">
-          Find your dream job and take the next step in your career journey.  
+          Find your dream job and take the next step in your career journey. <br /> 
           Register or login to get started today!
         </p>
       </div>
