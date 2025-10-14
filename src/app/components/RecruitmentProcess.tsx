@@ -1,6 +1,7 @@
 "use client";
+import React from "react";
 
-export default function RecruitmentTimeline() {
+export default function RecruitmentProcess() {
   const steps = [
     "Apply Online",
     "CV Shortlisting",
@@ -59,7 +60,7 @@ export default function RecruitmentTimeline() {
 
         {/* Mobile Circles (2 side by side with arrow) */}
         <div className="flex flex-col md:hidden gap-6">
-          {steps.reduce((acc: JSX.Element[], step, index) => {
+           {steps.reduce((acc: React.ReactNode[], step, index) => {
             if (index % 2 === 0) {
               const nextStep = steps[index + 1];
               acc.push(
