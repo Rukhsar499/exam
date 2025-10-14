@@ -27,7 +27,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="flex  items-center justify-between px-6 py-3 bg-white shadow-md">
+    <header className="flex fixed w-full items-center justify-between px-6 py-3 bg-white shadow-md">
       {/* Left: Logo */}
       <div className="container mx-auto">
         <div className="flex justify-between">
@@ -37,7 +37,7 @@ export default function Header() {
           alt="Logo"
           width={240}
           height={40}
-          className="md:w-[240px] w-[170px]"
+          className="md:w-[260px] w-[170px]"
         />
        
       </div>

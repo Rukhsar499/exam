@@ -9,7 +9,7 @@ export default function Banner() {
 
   return (
     <section
-      className="flex flex-col md:flex-row items-center justify-between bg-cover bg-center bg-no-repeat md:h-[500px]"
+      className="flex flex-col md:flex-row items-center justify-between bg-cover bg-center bg-no-repeat md:h-[600px] py-20"
       style={{
         backgroundImage: "url('/assets/img/portal-1.jpg')", // 👈 put your image path here
       }}
