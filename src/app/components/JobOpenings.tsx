@@ -116,7 +116,7 @@ export default function JobOpenings() {
                   {/* Line between circles (except after last one) */}
                   {index < 2 && (
                     <div
-                      className={`flex-1 h-[3px] w-[201px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
+                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
                         }`}
                     ></div>
                   )}

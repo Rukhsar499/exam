@@ -4,7 +4,7 @@ import WhyChoose from "./components/WhyChoose"
 import JobOpenings from "./components/JobOpenings"
 import RecruitmentProcess from "./components/RecruitmentProcess"
 // import RecruitmentTimeline from "./components/RecruitmentTimeline"
-import StickyFooter from "./components/StickyFooter"
+// import StickyFooter from "./components/StickyFooter"
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
     {/* <RecruitmentTimeline /> */}
     <JobOpenings />
     <WhyChoose />
-     <StickyFooter />
+     {/* <StickyFooter /> */}
     </>
   );
 }
