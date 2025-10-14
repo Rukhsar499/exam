@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
                     <div className="md:w-[30%] w-full">
                         <div className="flex flex-col">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Narayana Job Portal</h2>
-                            <p className="text-white/70 text-[17px]">
+                            <p className="text-white text-[16px]">
                                 Our cutting-edge football turf is in multiple locations across West Bengal. 
                             </p>
                         </div>
@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
                      <div className="md:w-[10%] w-full">
                         <div className="flex flex-col items-start justify-start text-left">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Links</h2>
-                            <ul className="space-y-2 text-white/70 font-['DM_Sans'] text-[16px]">
+                            <ul className="space-y-2 text-white text-[16px]">
                                 {legalLinks.map((link) => (
                                     <li key={link.name} className="flex items-center gap-2">
                                         <a href={link.href} className="hover:border-b-white hover:translate-x-1.5 hover:border-b-1 transform transition-all mb-3">
@@ -70,11 +70,11 @@ const Footer: React.FC = () => {
                     <div className="md:w-[30%] w-full">
                         <div className=" flex flex-col items-start justify-start text-left">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Contact Us</h2>
-                            <p className="text-white/70 text-[17px]">
+                            <p className="text-white text-[16px]">
                                Plot No IIF/11, Unit No. ESNTB0202, Ecospace Business Park, Rajarhat, New Town
                             </p>
                             <div className="pt-4">
-                                <ul className="space-y-2 text-white/70 text-[16px] font-['DM_Sans'] ">
+                                <ul className="space-y-2 text-white text-[16px] ">
                                     {contactInfo.map((item, index) => (
                                         <li key={index} className="flex items-center gap-2 mb-4">
                                             <span className="text-[#fff] text-lg">{item.icon}</span>
@@ -109,7 +109,7 @@ const Footer: React.FC = () => {
                 </div>
 
                 <hr className="my-6 border-white/20" />
-                <p className="text-center text-white/70 text-[17px]">
+                <p className="text-center text-white text-[16px]">
                     Narayana Job Portal ©{new Date().getFullYear()} • All Rights Reserved
                 </p>
             </div>

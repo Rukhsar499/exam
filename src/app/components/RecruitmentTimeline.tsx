@@ -13,9 +13,9 @@ export default function RecruitmentTimeline() {
   ];
 
   return (
-    <section className="md:py-16 py-10 bg-white md:mb-[50px]">
+    <section className="py-16 bg-white mb-[50px]">
       <div className="text-center mb-10 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#000] md:pb-[50px] ">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#000] pb-[50px] ">
           Recruitment Process
         </h2>
       </div>
@@ -66,7 +66,7 @@ export default function RecruitmentTimeline() {
                 <div key={index} className="flex items-center justify-center gap-4">
                   {/* Blue circle */}
                   <div
-                    className="w-30 h-30 flex items-center justify-center text-center rounded-full text-white font-medium shadow-md text-[16px] p-4"
+                    className="w-20 h-20 flex items-center justify-center rounded-full text-white font-medium shadow-md text-[12px]"
                     style={{ backgroundColor: "#1A7EBD" }}
                   >
                     {step}
@@ -74,13 +74,26 @@ export default function RecruitmentTimeline() {
 
                   {/* Right arrow if next step exists */}
                   {nextStep && (
-            <span className="text-gray-400 text-xl font-bold">→</span>
-          )}
+                    <svg
+                      className="w-6 h-6 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  )}
 
                   {/* Orange circle */}
                   {nextStep && (
                     <div
-                      className="w-30 h-30 flex items-center justify-center text-center rounded-full text-white font-medium shadow-md text-[16px] p-4"
+                      className="w-20 h-20 flex items-center justify-center rounded-full text-white font-medium shadow-md text-[12px]"
                       style={{ backgroundColor: "#ED7900" }}
                     >
                       {nextStep}
