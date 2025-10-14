@@ -27,7 +27,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="flex fixed w-full items-center justify-between px-6 py-3 bg-white shadow-md">
+    <header className="flex fixed w-full items-center justify-between px-6 py-3 bg-white shadow-md z-50">
       {/* Left: Logo */}
       <div className="container mx-auto">
         <div className="flex justify-between">

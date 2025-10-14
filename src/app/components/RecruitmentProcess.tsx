@@ -15,7 +15,7 @@ export default function RecruitmentTimeline() {
   return (
     <section className="py-16 bg-white mb-[50px]">
       <div className="text-center mb-10 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#000] pb-[50px]">
+        <h2 className="text-3xl md:text-4xl font-bold text-[#000] pb-[50px] ">
           Recruitment Process
         </h2>
       </div>
@@ -39,15 +39,15 @@ export default function RecruitmentTimeline() {
                 {/* 🔹 Small vertical line connecting circle and horizontal line */}
                 {isEven ? (
                   // Blue circle BELOW horizontal line
-                  <div className="absolute top-1/2 w-[2px] h-10 bg-gray-300"></div>
+                  <div className="absolute top-1/2 w-[2px] h-10 bg-gray-300 md:block hidden"></div>
                 ) : (
                   // Orange circle ABOVE horizontal line
-                  <div className="absolute bottom-1/2 w-[2px] h-10 bg-gray-300"></div>
+                  <div className="absolute bottom-1/2 w-[2px] h-10 bg-gray-300 md:block hidden"></div>
                 )}
 
                 {/* Circle with text */}
                 <div
-                  className="w-20 h-20 md:w-30 md:h-30 px-4 flex items-center justify-center rounded-full text-white font-medium  md:text-base shadow-md transition-transform duration-300 hover:scale-105 text-[14px]"
+                  className="w-30 h-30 px-4 flex items-center justify-center rounded-full text-white font-medium  md:text-base shadow-md transition-transform duration-300 hover:scale-105 text-[14px]"
                   style={{
                     backgroundColor: circleColor,
                     transform: isEven ? "translateY(70%)" : "translateY(-70%)",
