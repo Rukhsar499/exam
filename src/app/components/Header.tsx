@@ -37,6 +37,7 @@ export default function Header() {
           alt="Logo"
           width={240}
           height={40}
+          className="md:w-[240px] w-[170px]"
         />
        
       </div>
