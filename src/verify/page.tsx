@@ -1,69 +1,73 @@
-'use client';
-import { useState } from 'react';
-import { apiFetch } from '@/lib/apiClient';
-import { useRouter } from 'next/navigation';
+"use client";
 
-interface VerifyResponse {
-  success: boolean;
+import { useState } from "react";
+import { apiPost } from "../../lib/apiClient";
+
+interface OTPFormData {
+  email: string;
+  otp: string;
+}
+
+interface ApiResponse {
+  status: boolean;
   message: string;
+  [key: string]: any;
 }
 
-interface VerifyPageProps {
-  searchParams?: { email?: string };
+interface OTPProps {
+  email: string;
 }
 
-export default function VerifyPage({ searchParams }: VerifyPageProps) {
-  const [code, setCode] = useState('');
+export default function OTPVerification({ email }: OTPProps) {
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-  const router = useRouter();
-  const email = searchParams?.email || '';
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  async function submit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMsg(null);
+    setSuccessMessage("");
+    setErrorMessage("");
 
     try {
-      // ✅ type-safe API call
-      const res = await apiFetch<VerifyResponse>('/verify', {
-        method: 'POST',
-        body: JSON.stringify({ email, code }),
-      });
+      const res: ApiResponse = await apiPost<ApiResponse, OTPFormData>(
+        "v1/verify_web_register",
+        { email, otp }
+      );
 
-      if (res.ok) {
-        router.push('/dashboard'); // assume backend sets HTTPOnly cookie or token
+      if (res.status) {
+        setSuccessMessage(res.message || "OTP verified successfully! You can now login.");
       } else {
-        setMsg(res.error?.message || 'Verification failed');
+        setErrorMessage(res.message || "OTP verification failed.");
       }
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Unexpected error';
-      setMsg(message);
+    } catch (err: any) {
+      setErrorMessage(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow">
-      <h2 className="text-2xl font-semibold mb-4">Verify account</h2>
-      <form onSubmit={submit} className="space-y-4">
-        <input
-          placeholder="Enter verification code"
-          value={code}
-          onChange={e => setCode(e.target.value)}
-          className="w-full p-3 border rounded"
-          required
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full p-3 bg-blue-600 text-white rounded disabled:opacity-50"
-        >
-          {loading ? 'Verifying...' : 'Verify'}
-        </button>
-        {msg && <p className="text-sm mt-2 text-red-600">{msg}</p>}
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <input
+        type="text"
+        name="otp"
+        placeholder="Enter OTP"
+        value={otp}
+        onChange={(e) => setOtp(e.target.value)}
+        className="w-full p-2 border rounded"
+        required
+      />
+      <button
+        type="submit"
+        className={`w-full bg-green-500 text-white px-4 py-2 rounded ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        disabled={loading}
+      >
+        {loading ? "Verifying..." : "Verify OTP"}
+      </button>
+      {successMessage && <p className="mt-2 text-green-600">{successMessage}</p>}
+      {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>}
+    </form>
   );
 }

@@ -46,7 +46,7 @@ export default function Header() {
       <div className="flex items-center space-x-3">
         <UserCircle className="w-6 h-6 text-gray-700" />
         <span className="text-gray-800 font-medium">
-          {user ? user.name : "Rukhsar"}
+          {user ? user.name : ""}
         </span>
       </div>
       </div>
