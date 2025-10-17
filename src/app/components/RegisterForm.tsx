@@ -8,7 +8,6 @@ interface RegisterFormData {
   email: string;
   mobile_no: string;
   password: string;
-
 }
 
 interface OTPFormData {
@@ -28,8 +27,8 @@ export default function RegisterFormWithOTP() {
     email: "",
     mobile_no: "",
     password: "",
-
   });
+
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +37,7 @@ export default function RegisterFormWithOTP() {
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpMessage, setOtpMessage] = useState("");
 
-  // Form input change
+  // Input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -55,11 +54,11 @@ export default function RegisterFormWithOTP() {
         "v1/web_register",
         formData
       );
-      console.log(res);
 
       if (res.status) {
+        // ✅ Show message in UI instead of alert
         alert("Registration successful! Please check your OTP.");
-        setSuccessMessage(res.message || "Registration successful! Please check your OTP.");
+        setSuccessMessage(res.message || "Registration successful! Check your OTP.");
         setShowOTPModal(true); // Show OTP popup
       } else {
         setErrorMessage(res.message || "Registration failed. Try again.");
@@ -74,38 +73,37 @@ export default function RegisterFormWithOTP() {
 
   // OTP submit
   const handleOTPSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setOtpLoading(true);
-  setOtpMessage("");
+    e.preventDefault();
+    setOtpLoading(true);
+    setOtpMessage("");
 
-  try {
-    const res = await apiPost<ApiResponse, OTPFormData>(
-      "v1/verify_web_register",
-      { email: formData.email.trim(), otp: otp.trim() }
-    );
+    try {
+      const res = await apiPost<ApiResponse, OTPFormData>(
+        "v1/verify_web_register",
+        { email: formData.email.trim(), otp: otp.trim() }
+      );
 
-    if (res.status) {
-      // ✅ Force show correct success text
-      setOtpMessage("✅ OTP Verified Successfully!");
-      // Optional: close popup after 2 sec
-      setTimeout(() => {
-        setShowOTPModal(false);
-        setOtp("");
-        setOtpMessage("");
-      }, 2000);
-    } else {
-      setOtpMessage(res.message || "❌ OTP verification failed.");
+      if (res.status) {
+        // ✅ Show verified message
+        setOtpMessage("✅ OTP Verified Successfully!");
+
+        // ✅ Reload page after 2 seconds
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        setOtpMessage(res.message || "❌ OTP verification failed.");
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) setOtpMessage(err.message);
+      else setOtpMessage("Something went wrong.");
+    } finally {
+      setOtpLoading(false);
     }
-  } catch (err: unknown) {
-    if (err instanceof Error) setOtpMessage(err.message);
-    else setOtpMessage("Something went wrong.");
-  } finally {
-    setOtpLoading(false);
-  }
-};
+  };
 
   return (
-    <div className="max-w-md mx-auto  rounded relative">
+    <div className="max-w-md mx-auto rounded relative">
       {/* Register Form */}
       <form onSubmit={handleRegister} className="space-y-4">
         <input
@@ -153,6 +151,7 @@ export default function RegisterFormWithOTP() {
             {loading ? "Registering..." : "Get OTP"}
           </button>
         </div>
+
         {successMessage && <p className="mt-2 text-green-600">{successMessage}</p>}
         {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>}
       </form>
@@ -161,13 +160,13 @@ export default function RegisterFormWithOTP() {
       {showOTPModal && (
         <div className="fixed inset-0 bg-[#00000086] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow max-w-sm w-full relative">
-            <h2 className="text-lg font-semibold mb-4">Enter OTP</h2>
+            <h2 className="text-lg font-semibold mb-4 text-center">Enter OTP</h2>
 
             {/* OTP Form */}
             <form onSubmit={handleOTPSubmit} className="space-y-4">
               <input
                 type="text"
-                placeholder="OTP"
+                placeholder="Enter OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="w-full p-2 border rounded"
@@ -177,8 +176,7 @@ export default function RegisterFormWithOTP() {
 
               <button
                 type="submit"
-                className={`w-full bg-green-500 text-white px-4 py-2 rounded ${otpLoading ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
+                className={`w-full bg-green-500 text-white px-4 py-2 rounded ${otpLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 disabled={otpLoading}
               >
                 {otpLoading ? "Verifying..." : "Verify OTP"}
@@ -186,10 +184,11 @@ export default function RegisterFormWithOTP() {
 
               {otpMessage && (
                 <p
-                  className={`mt-2 text-center ${otpMessage.toLowerCase().includes("success")
+                  className={`mt-2 text-center ${
+                    otpMessage.toLowerCase().includes("success")
                       ? "text-green-600"
                       : "text-red-500"
-                    }`}
+                  }`}
                 >
                   {otpMessage}
                 </p>
@@ -207,8 +206,6 @@ export default function RegisterFormWithOTP() {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
