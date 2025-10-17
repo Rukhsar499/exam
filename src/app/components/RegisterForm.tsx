@@ -58,7 +58,7 @@ export default function RegisterFormWithOTP() {
       if (res.status) {
         // ✅ Show message in UI instead of alert
         alert("Registration successful! Please check your OTP.");
-        setSuccessMessage(res.message || "Registration successful! Check your OTP.");
+        // setSuccessMessage("Registration successful! Check your OTP.");
         setShowOTPModal(true); // Show OTP popup
       } else {
         setErrorMessage(res.message || "Registration failed. Try again.");

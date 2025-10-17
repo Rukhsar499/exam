@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { apiPost } from "../../lib/apiClient"; // tumhara proxy + apiPost function
+import { apiPost } from "../../lib/apiClient"; 
+import { useUser } from "../context/UserContext";
 
 interface LoginFormData {
   email: string;
@@ -10,17 +11,20 @@ interface LoginFormData {
 interface ApiResponse {
   status: boolean;
   message: string;
-  token?: string; // agar API JWT ya session token return kare
+  token?: string;
+  user?: { name: string };
   [key: string]: unknown;
 }
 
 export default function LoginForm() {
+  const { setUser } = useUser(); // ✅ context setter
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [welcomeUser, setWelcomeUser] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,9 +42,23 @@ export default function LoginForm() {
       );
 
       if (res.status) {
-        alert("Login successful!");
+        // ✅ store token
         if (res.token) localStorage.setItem("token", res.token);
-        // Redirect to dashboard if needed
+
+        // ✅ store user in localStorage + update context
+        if (res.user) {
+          localStorage.setItem("user", JSON.stringify(res.user));
+          setUser(res.user); 
+          setWelcomeUser(res.user.name);
+        } else {
+          setWelcomeUser("User");
+        }
+
+        // ✅ auto-close popup after 3 seconds
+        setTimeout(() => setWelcomeUser(null), 3000);
+
+        // ✅ optional: redirect to dashboard
+        // window.location.href = "/dashboard";
       } else {
         setErrorMessage(res.message || "Login failed");
       }
@@ -53,47 +71,65 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 pt-6">
-      <div>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full mt-1 px-3 py-2 text-sm border-b border-[#0000008a] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your email"
-          required
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit} className="space-y-4 pt-6">
+        <div>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full mt-1 px-3 py-2 text-sm border-b border-[#0000008a] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
 
-      <div>
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full mt-1 px-3 py-2 border-b border-[#0000008a] text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your password"
-          required
-        />
-        {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>}
-      </div>
+        <div>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="w-full mt-1 px-3 py-2 border-b border-[#0000008a] text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter your password"
+            required
+          />
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+          )}
+        </div>
 
-      <p className="text-[12px] text-[#0000008a]">
-        New to Narayana Job Portal? Create an account by clicking Register
-      </p>
+        <p className="text-[12px] text-[#0000008a]">
+          New to Narayana Job Portal? Create an account by clicking Register
+        </p>
 
-      <div className="text-center">
-        <button
-          type="submit"
-          disabled={loading}
-          className={`mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {loading ? "Logging in..." : "Login →"}
-        </button>
-      </div>
-    </form>
+        <div className="text-center">
+          <button
+            type="submit"
+            disabled={loading}
+            className={`mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {loading ? "Logging in..." : "Login →"}
+          </button>
+        </div>
+      </form>
+
+      {/* ✅ Welcome Popup */}
+      {welcomeUser && (
+        <div className="fixed inset-0 flex items-center justify-center bg-[#0008] bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center animate-fadeIn">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Welcome, {welcomeUser}! 🎉
+            </h2>
+            <p className="text-sm text-gray-600 mt-2">
+              You have successfully logged in.
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
