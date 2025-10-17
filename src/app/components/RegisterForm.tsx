@@ -73,29 +73,35 @@ export default function RegisterFormWithOTP() {
 
   // OTP submit
   const handleOTPSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setOtpLoading(true);
-    setOtpMessage("");
+  e.preventDefault();
+  setOtpLoading(true);
+  setOtpMessage("");
 
-    try {
-      const res = await apiPost<ApiResponse, OTPFormData>(
-        "v1/verify_web_register",
-        { email: formData.email.trim(), otp: otp.trim() }
-      );
+  try {
+    const res = await apiPost<ApiResponse, OTPFormData>(
+      "v1/verify_web_register",
+      { email: formData.email.trim(), otp: otp.trim() }
+    );
 
-      if (res.status) {
-        setOtpMessage(res.message || "OTP verified successfully!");
-        setShowOTPModal(false); // Close modal on success
-      } else {
-        setOtpMessage(res.message || "OTP verification failed.");
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error) setOtpMessage(err.message);
-      else setOtpMessage("Something went wrong.");
-    } finally {
-      setOtpLoading(false);
+    if (res.status) {
+      // ✅ Force show correct success text
+      setOtpMessage("✅ OTP Verified Successfully!");
+      // Optional: close popup after 2 sec
+      setTimeout(() => {
+        setShowOTPModal(false);
+        setOtp("");
+        setOtpMessage("");
+      }, 2000);
+    } else {
+      setOtpMessage(res.message || "❌ OTP verification failed.");
     }
-  };
+  } catch (err: unknown) {
+    if (err instanceof Error) setOtpMessage(err.message);
+    else setOtpMessage("Something went wrong.");
+  } finally {
+    setOtpLoading(false);
+  }
+};
 
   return (
     <div className="max-w-md mx-auto  rounded relative">
