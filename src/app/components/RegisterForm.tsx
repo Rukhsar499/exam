@@ -58,6 +58,7 @@ export default function RegisterFormWithOTP() {
       console.log(res);
 
       if (res.status) {
+        alert("Registration successful! Please check your OTP.");
         setSuccessMessage(res.message || "Registration successful! Please check your OTP.");
         setShowOTPModal(true); // Show OTP popup
       } else {
