@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiPost } from "../../lib/apiClient";
 import { useUser } from "../context/UserContext";
 
@@ -21,7 +21,7 @@ user_mobileno: string;
 }
 
 export default function LoginForm() {
-const { setUser } = useUser();
+const { user, setUser } = useUser();
 const [formData, setFormData] = useState<LoginFormData>({
 email: "",
 password: "",
@@ -29,6 +29,16 @@ password: "",
 const [loading, setLoading] = useState(false);
 const [errorMessage, setErrorMessage] = useState("");
 const [welcomeUser, setWelcomeUser] = useState<string | null>(null);
+const [alreadyLogged, setAlreadyLogged] = useState<string | null>(null);
+
+useEffect(() => {
+const storedUser = localStorage.getItem("user");
+if (storedUser) {
+const parsedUser = JSON.parse(storedUser);
+setUser(parsedUser);
+setAlreadyLogged(parsedUser.username);
+}
+}, [setUser]);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,6 +46,12 @@ setFormData({ ...formData, [e.target.name]: e.target.value });
 
 const handleSubmit = async (e: React.FormEvent) => {
 e.preventDefault();
+if (user) {
+setAlreadyLogged(user.username);
+return;
+}
+
+
 setLoading(true);
 setErrorMessage("");
 
@@ -73,6 +89,13 @@ try {
 
 };
 
+if (alreadyLogged) {
+return ( <div className="flex flex-col items-center justify-center py-10 text-center"> <h2 className="text-lg font-semibold text-gray-800">
+You’re already logged in, {alreadyLogged}! 🎉 </h2> <p className="text-sm text-gray-600 mt-2">
+Please log out before logging into another account. </p> </div>
+);
+}
+
 return (
 <> <form onSubmit={handleSubmit} className="space-y-4 pt-6"> <div> <input
          type="email"
@@ -83,7 +106,6 @@ return (
          placeholder="Enter your email"
          required
        /> </div>
-
 
     <div>
       <input
