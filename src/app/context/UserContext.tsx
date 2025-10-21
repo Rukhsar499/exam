@@ -1,34 +1,49 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+// ✅ Exactly matches your API structure
 interface UserData {
-  name: string;
+username: string;
+user_emailid?: string;
+user_mobileno?: string;
+userid?: number;
+[key: string]: unknown;
 }
 
 interface UserContextType {
-  user: UserData | null;
-  setUser: (user: UserData | null) => void;
+user: UserData | null;
+setUser: (user: UserData | null) => void;
 }
 
 const UserContext = createContext<UserContextType>({
-  user: null,
-  setUser: () => {},
+user: null,
+setUser: () => {},
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserData | null>(null);
+const [user, setUser] = useState<UserData | null>(null);
+const [isLoaded, setIsLoaded] = useState(false);
 
-  // ✅ Load user from localStorage on client-side only
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
+useEffect(() => {
+const storedUser = localStorage.getItem("user");
+if (storedUser) {
+try {
+setUser(JSON.parse(storedUser));
+} catch (err) {
+console.error("Invalid user data in localStorage:", err);
+localStorage.removeItem("user");
+}
+}
+setIsLoaded(true);
+}, []);
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+if (!isLoaded) return null;
+
+return (
+<UserContext.Provider value={{ user, setUser }}>
+{children}
+</UserContext.Provider>
+);
 };
 
 export const useUser = () => useContext(UserContext);
