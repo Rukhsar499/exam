@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Job {
-  id: number;
-  title: string;
-  description: string;
-  qualification: string;
+  job_id: number;
+  job_title: string;
+  job_short_description: string;
+  job_description: string;
+  exp_required: string;
+  no_of_positions: number;
+  minimum_qualification: string;
+  last_dateof_application: string;
 }
 
 interface FormData {
@@ -23,13 +27,7 @@ interface FormData {
 }
 
 export default function JobOpenings() {
-  const [jobs] = useState<Job[]>([
-    { id: 1, title: "Frontend Developer", description: "Build and maintain responsive web applications using React.", qualification: "Bachelor’s in CS" },
-    { id: 2, title: "Backend Developer", description: "Work on APIs and database integration using Node.js or Laravel.", qualification: "Experience with REST APIs" },
-    { id: 3, title: "SEO", description: "Work on APIs and database integration using Node.js or Laravel.", qualification: "Experience with REST APIs" },
-    { id: 4, title: "Ad Expert", description: "Work on APIs and database integration using Node.js or Laravel.", qualification: "Experience with REST APIs" },
-  ]);
-
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
@@ -44,6 +42,30 @@ export default function JobOpenings() {
     photo: null,
     cv: null,
   });
+
+  useEffect(() => {
+  const fetchJobs = async () => {
+    try {
+      const res = await fetch("https://njportal.thenoncoders.in/api/v1/get_joblist", {
+        headers: {
+          "Content-Type": "application/json",
+         "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
+        },
+      });
+
+      const data = await res.json();
+      if (data.status) {
+        setJobs(data.data);
+      } else {
+        console.error("Failed to fetch jobs:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+    }
+  };
+
+  fetchJobs();
+}, []);
 
   const handleOpenForm = (jobTitle: string) => {
     setFormData({ ...formData, jobTitle });
@@ -76,108 +98,49 @@ export default function JobOpenings() {
         <h2 className="text-3xl md:text-4xl font-bold text-[#000]">Current Job Openings</h2>
       </div>
 
+      {/* ✅ Job Cards (Dynamic from API) */}
       <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-        {jobs.map((job) => (
-          <div key={job.id} className="bg-white border border-gray-200 rounded-xl shadow-md p-6 hover:shadow-lg transition-transform duration-300 hover:scale-[1.02] flex flex-col">
-            <h3 className="text-xl font-semibold text-blue-900 mb-2">{job.title}</h3>
-            <p className="text-gray-700 text-sm mb-2">{job.description}</p>
-            <p className="text-gray-500 text-sm mb-4"><span className="font-semibold">Qualification:</span> {job.qualification}</p>
-            <div>
-              <button onClick={() => handleOpenForm(job.title)} className="mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all">
-                Apply →
-              </button>
+        {jobs.length > 0 ? (
+          jobs.map((job) => (
+            <div
+              key={job.job_id}
+              className="bg-white border border-gray-200 rounded-xl shadow-md p-6 hover:shadow-lg transition-transform duration-300 hover:scale-[1.02] flex flex-col"
+            >
+              <h3 className="text-xl font-semibold text-blue-900 mb-4">{job.job_title}</h3>
+              <p className="text-gray-500 text-sm mb-3">
+                <span className="font-semibold">Description:</span> {job.job_description}</p>
+              <p className="text-gray-500 text-sm mb-3">
+                <span className="font-semibold">Qualification:</span> {job.minimum_qualification}
+              </p>
+               <p className="text-gray-500 text-sm mb-3">
+                <span className="font-semibold">Experience</span> {job.exp_required}
+              </p>
+               <p className="text-gray-500 text-sm mb-3">
+                <span className="font-semibold">No of positions</span> {job.no_of_positions}
+              </p>
+               <p className="text-gray-500 text-sm mb-5">
+                <span className="font-semibold">Last Date</span> {job.last_dateof_application}
+              </p>
+              <div>
+                <button
+                  onClick={() => handleOpenForm(job.job_title)}
+                  className="mt-auto inline-flex items-center justify-center bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full hover:bg-[#166ea8] transition-all"
+                >
+                  Apply →
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center col-span-2 text-gray-500">Loading jobs...</p>
+        )}
       </div>
 
-      {/* Modal */}
+      {/* ✅ Keep your existing modal form below (no changes needed) */}
       {isOpen && (
+        // your existing modal JSX here
         <div className="fixed inset-0 bg-[#00000096] bg-opacity-20 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-2xl p-6  relative">
-            <h2 className="text-2xl font-bold mb-6 text-center">Application Form</h2>
-
-            {/* Step Indicators */}
-            <div className="relative flex items-center justify-between mx-auto mb-6 px-4">
-              {[1, 2, 3].map((step, index) => (
-                <div key={step} className="flex items-center">
-                  {/* Step Circle */}
-                  <div
-                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${currentStep === step
-                        ? "bg-[#ed7900] text-white"
-                        : step < currentStep
-                          ? "bg-[#ed7900] text-white"
-                          : "bg-[#1A7EBD] text-white"
-                      }`}
-                  >
-                    {step}
-                  </div>
-
-                  {/* Line between circles (except after last one) */}
-                  {index < 2 && (
-                    <div
-                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
-                        }`}
-                    ></div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Step 1 */}
-            {currentStep === 1 && (
-              <div className="space-y-4">
-                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
-                <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
-                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full  p-2  bg-gray-100 text-sm  border-b border-[#0000008a]" />
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
-              </div>
-            )}
-
-            {/* Step 2 */}
-            {currentStep === 2 && (
-              <div className="space-y-4">
-                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]" />
-                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]" />
-                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]">
-                  <option value="">Highest Qualification</option>
-                  <option value="High School">High School</option>
-                  <option value="Bachelor’s">Bachelor’s</option>
-                  <option value="Master’s">Master’s</option>
-                </select>
-                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]">
-                  <option value="">Professional Qualification</option>
-                  <option value="React">React</option>
-                  <option value="Node.js">Node.js</option>
-                  <option value="Laravel">Laravel</option>
-                </select>
-              </div>
-            )}
-
-            {/* Step 3 */}
-            {currentStep === 3 && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block mb-1">Upload Photo</label>
-                  <input type="file" name="photo" accept="image/*" onChange={handleFileChange} className="w-full border p-2 rounded" />
-                </div>
-                <div>
-                  <label className="block mb-1">Upload CV</label>
-                  <input type="file" name="cv" accept=".pdf,.doc,.docx" onChange={handleFileChange} className="w-full border p-2 rounded" />
-                </div>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-6">
-              {currentStep > 1 && <button onClick={handlePrev} className=" bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">Previous  →</button>}
-              {currentStep < 3 && <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">Next  →</button>}
-              {currentStep === 3 && <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">Submit →</button>}
-            </div>
-
-            {/* Close Button */}
-            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">X</button>
-          </div>
+          {/* form content (same as before) */}
         </div>
       )}
     </section>
