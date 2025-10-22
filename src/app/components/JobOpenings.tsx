@@ -113,13 +113,13 @@ export default function JobOpenings() {
                 <span className="font-semibold">Qualification:</span> {job.minimum_qualification}
               </p>
                <p className="text-gray-500 text-sm mb-3">
-                <span className="font-semibold">Experience</span> {job.exp_required}
+                <span className="font-semibold">Experience:</span> {job.exp_required}
               </p>
                <p className="text-gray-500 text-sm mb-3">
-                <span className="font-semibold">No of positions</span> {job.no_of_positions}
+                <span className="font-semibold">No of positions:</span> {job.no_of_positions}
               </p>
                <p className="text-gray-500 text-sm mb-5">
-                <span className="font-semibold">Last Date</span> {job.last_dateof_application}
+                <span className="font-semibold">Last Date:</span> {job.last_dateof_application}
               </p>
               <div>
                 <button
