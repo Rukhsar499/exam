@@ -16,6 +16,7 @@ interface Job {
 interface FormData {
   name: string;
   phone: string;
+  email: string;
   jobTitle: string;
   dob: string;
   aadhar: string;
@@ -33,6 +34,7 @@ export default function JobOpenings() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     phone: "",
+    email: "",
     jobTitle: "",
     dob: "",
     aadhar: "",
@@ -67,11 +69,30 @@ export default function JobOpenings() {
   fetchJobs();
 }, []);
 
-  const handleOpenForm = (jobTitle: string) => {
-    setFormData({ ...formData, jobTitle });
+ const handleOpenForm = (jobTitle: string) => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setFormData({
+        ...formData,
+        jobTitle,
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+      });
+    } else {
+      // If user not logged in, just set the jobTitle
+      setFormData({
+        ...formData,
+        jobTitle,
+      });
+    }
+
     setIsOpen(true);
     setCurrentStep(1);
   };
+
 
   const handleNext = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const handlePrev = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
@@ -140,7 +161,91 @@ export default function JobOpenings() {
       {isOpen && (
         // your existing modal JSX here
         <div className="fixed inset-0 bg-[#00000096] bg-opacity-20 flex items-center justify-center z-50">
-          {/* form content (same as before) */}
+          <div className="bg-white w-full max-w-2xl p-6  relative">
+            <h2 className="text-2xl font-bold mb-6 text-center">Application Form</h2>
+
+            {/* Step Indicators */}
+            <div className="relative flex items-center justify-between mx-auto mb-6 px-4">
+              {[1, 2, 3].map((step, index) => (
+                <div key={step} className="flex items-center">
+                  {/* Step Circle */}
+                  <div
+                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${currentStep === step
+                        ? "bg-[#ed7900] text-white"
+                        : step < currentStep
+                          ? "bg-[#ed7900] text-white"
+                          : "bg-[#1A7EBD] text-white"
+                      }`}
+                  >
+                    {step}
+                  </div>
+
+                  {/* Line between circles (except after last one) */}
+                  {index < 2 && (
+                    <div
+                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
+                        }`}
+                    ></div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Step 1 */}
+            {currentStep === 1 && (
+              <div className="space-y-4">
+                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
+                <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
+                 <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
+                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full  p-2  bg-gray-100 text-sm  border-b border-[#0000008a]" />
+                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
+              </div>
+            )}
+
+            {/* Step 2 */}
+            {currentStep === 2 && (
+              <div className="space-y-4">
+                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]" />
+                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]" />
+                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]">
+                  <option value="">Highest Qualification</option>
+                  <option value="High School">High School</option>
+                  <option value="Bachelor’s">Bachelor’s</option>
+                  <option value="Master’s">Master’s</option>
+                </select>
+                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]">
+                  <option value="">Professional Qualification</option>
+                  <option value="React">React</option>
+                  <option value="Node.js">Node.js</option>
+                  <option value="Laravel">Laravel</option>
+                </select>
+              </div>
+            )}
+
+            {/* Step 3 */}
+            {currentStep === 3 && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-1">Upload Photo</label>
+                  <input type="file" name="photo" accept="image/*" onChange={handleFileChange} className="w-full border p-2 rounded" />
+                </div>
+                <div>
+                  <label className="block mb-1">Upload CV</label>
+                  <input type="file" name="cv" accept=".pdf,.doc,.docx" onChange={handleFileChange} className="w-full border p-2 rounded" />
+                </div>
+              </div>
+            )}
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-6">
+              {currentStep > 1 && <button onClick={handlePrev} className=" bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">Previous  →</button>}
+              {currentStep < 3 && <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">Next  →</button>}
+              {currentStep === 3 && <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">Submit →</button>}
+            </div>
+
+            {/* Close Button */}
+            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">X</button>
+          </div>
         </div>
       )}
     </section>
