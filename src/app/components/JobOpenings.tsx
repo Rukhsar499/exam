@@ -14,9 +14,9 @@ interface Job {
 }
 
 interface FormData {
-  name: string;
-  phone: string;
-  email: string;
+  username: string;
+  user_mobileno: string;
+  user_emailid: string;
   jobTitle: string;
   dob: string;
   aadhar: string;
@@ -32,9 +32,9 @@ export default function JobOpenings() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    phone: "",
-    email: "",
+    username: "",
+    user_mobileno: "",
+    user_emailid: "",
     jobTitle: "",
     dob: "",
     aadhar: "",
@@ -45,54 +45,58 @@ export default function JobOpenings() {
     cv: null,
   });
 
+  const [savedUser, setSavedUser] = useState<{ username: string; user_emailid: string; user_mobileno: string } | null>(null);
+
+  // ✅ Fetch saved user details from localStorage when page loads
   useEffect(() => {
-  const fetchJobs = async () => {
-    try {
-      const res = await fetch("https://njportal.thenoncoders.in/api/v1/get_joblist", {
-        headers: {
-          "Content-Type": "application/json",
-         "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
-        },
-      });
-
-      const data = await res.json();
-      if (data.status) {
-        setJobs(data.data);
-      } else {
-        console.error("Failed to fetch jobs:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
-
-  fetchJobs();
-}, []);
-
- const handleOpenForm = (jobTitle: string) => {
     const storedUser = localStorage.getItem("user");
-
     if (storedUser) {
-      const user = JSON.parse(storedUser);
-      setFormData({
-        ...formData,
-        jobTitle,
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-      });
-    } else {
-      // If user not logged in, just set the jobTitle
-      setFormData({
-        ...formData,
-        jobTitle,
-      });
+      try {
+        const parsed = JSON.parse(storedUser);
+        setSavedUser(parsed);
+      } catch (err) {
+        console.error("Error parsing stored user:", err);
+      }
     }
+  }, []);
 
+  // ✅ Fetch jobs from API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch("https://njportal.thenoncoders.in/api/v1/get_joblist", {
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
+          },
+        });
+        const data = await res.json();
+        if (data.status) {
+          setJobs(data.data);
+        } else {
+          console.error("Failed to fetch jobs:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+    fetchJobs();
+  }, []);
+  
+
+
+  // ✅ Open modal with pre-filled data if user exists
+  const handleOpenForm = (jobTitle: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      jobTitle,
+      username: savedUser?.username || "",
+      user_emailid: savedUser?.user_emailid || "",
+      user_mobileno: savedUser?.user_mobileno || "",
+    }));
     setIsOpen(true);
     setCurrentStep(1);
   };
-
 
   const handleNext = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const handlePrev = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
@@ -119,7 +123,7 @@ export default function JobOpenings() {
         <h2 className="text-3xl md:text-4xl font-bold text-[#000]">Current Job Openings</h2>
       </div>
 
-      {/* ✅ Job Cards (Dynamic from API) */}
+      {/* ✅ Job Cards */}
       <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {jobs.length > 0 ? (
           jobs.map((job) => (
@@ -129,17 +133,18 @@ export default function JobOpenings() {
             >
               <h3 className="text-xl font-semibold text-blue-900 mb-4">{job.job_title}</h3>
               <p className="text-gray-500 text-sm mb-3">
-                <span className="font-semibold">Description:</span> {job.job_description}</p>
+                <span className="font-semibold">Description:</span> {job.job_description}
+              </p>
               <p className="text-gray-500 text-sm mb-3">
                 <span className="font-semibold">Qualification:</span> {job.minimum_qualification}
               </p>
-               <p className="text-gray-500 text-sm mb-3">
+              <p className="text-gray-500 text-sm mb-3">
                 <span className="font-semibold">Experience:</span> {job.exp_required}
               </p>
-               <p className="text-gray-500 text-sm mb-3">
+              <p className="text-gray-500 text-sm mb-3">
                 <span className="font-semibold">No of positions:</span> {job.no_of_positions}
               </p>
-               <p className="text-gray-500 text-sm mb-5">
+              <p className="text-gray-500 text-sm mb-5">
                 <span className="font-semibold">Last Date:</span> {job.last_dateof_application}
               </p>
               <div>
@@ -157,34 +162,34 @@ export default function JobOpenings() {
         )}
       </div>
 
-      {/* ✅ Keep your existing modal form below (no changes needed) */}
+      {/* ✅ Modal Form */}
       {isOpen && (
-        // your existing modal JSX here
         <div className="fixed inset-0 bg-[#00000096] bg-opacity-20 flex items-center justify-center z-50">
-          <div className="bg-white w-full max-w-2xl p-6  relative">
-            <h2 className="text-2xl font-bold mb-6 text-center">Application Form</h2>
+          <div className="bg-white w-full max-w-2xl p-6 relative">
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              Application Form 
+            </h2>
 
             {/* Step Indicators */}
             <div className="relative flex items-center justify-between mx-auto mb-6 px-4">
               {[1, 2, 3].map((step, index) => (
                 <div key={step} className="flex items-center">
-                  {/* Step Circle */}
                   <div
-                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${currentStep === step
+                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${
+                      currentStep === step
                         ? "bg-[#ed7900] text-white"
                         : step < currentStep
-                          ? "bg-[#ed7900] text-white"
-                          : "bg-[#1A7EBD] text-white"
-                      }`}
+                        ? "bg-[#ed7900] text-white"
+                        : "bg-[#1A7EBD] text-white"
+                    }`}
                   >
                     {step}
                   </div>
-
-                  {/* Line between circles (except after last one) */}
                   {index < 2 && (
                     <div
-                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"
-                        }`}
+                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${
+                        currentStep > step ? "bg-blue-400" : "bg-gray-300"
+                      }`}
                     ></div>
                   )}
                 </div>
@@ -194,11 +199,11 @@ export default function JobOpenings() {
             {/* Step 1 */}
             {currentStep === 1 && (
               <div className="space-y-4">
-                <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
-                <input type="tel" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
-                 <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="w-full p-2  text-sm  border-b border-[#0000008a]" />
-                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full  p-2  bg-gray-100 text-sm  border-b border-[#0000008a]" />
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full  p-2  text-sm  border-b border-[#0000008a]" />
+                <input type="text" name="username" placeholder="Full Name" value={formData.username} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+                <input type="tel" name="user_mobileno" placeholder="Phone" value={formData.user_mobileno} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+                <input type="email" name="user_emailid" placeholder="Email" value={formData.user_emailid} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+                <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full p-2 bg-gray-100 text-sm border-b border-[#0000008a]" />
+                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
               </div>
             )}
 
@@ -221,8 +226,7 @@ export default function JobOpenings() {
                 </select>
               </div>
             )}
-
-            {/* Step 3 */}
+             {/* Step 3 */}
             {currentStep === 3 && (
               <div className="space-y-4">
                 <div>
@@ -236,15 +240,28 @@ export default function JobOpenings() {
               </div>
             )}
 
-            {/* Navigation Buttons */}
+
             <div className="flex justify-between mt-6">
-              {currentStep > 1 && <button onClick={handlePrev} className=" bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">Previous  →</button>}
-              {currentStep < 3 && <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">Next  →</button>}
-              {currentStep === 3 && <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">Submit →</button>}
+              {currentStep > 1 && (
+                <button onClick={handlePrev} className="bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">
+                  Previous →
+                </button>
+              )}
+              {currentStep < 3 && (
+                <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">
+                  Next →
+                </button>
+              )}
+              {currentStep === 3 && (
+                <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">
+                  Submit →
+                </button>
+              )}
             </div>
 
-            {/* Close Button */}
-            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">X</button>
+            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">
+              X
+            </button>
           </div>
         </div>
       )}

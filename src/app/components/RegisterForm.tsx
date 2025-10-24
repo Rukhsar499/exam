@@ -87,8 +87,7 @@ export default function RegisterFormWithOTP() {
         // ✅ Show verified message
         setOtpMessage("✅ OTP Verified Successfully!");
 
-        // ✅ Save user details in localStorage for later auto-fill
-       localStorage.setItem( "user", JSON.stringify({ name: formData.name, email: formData.email, phone: formData.mobile_no, }) );
+      
 
         // ✅ Reload page after 2 seconds
         setTimeout(() => {
