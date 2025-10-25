@@ -13,12 +13,12 @@ interface Job {
   last_dateof_application: string;
 }
 
-interface FormData {
+interface FormDataType {
   username: string;
   user_mobileno: string;
   user_emailid: string;
   jobTitle: string;
-  dob: string;
+
   aadhar: string;
   address: string;
   highestQualification: string;
@@ -31,12 +31,12 @@ export default function JobOpenings() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormDataType>({
     username: "",
     user_mobileno: "",
     user_emailid: "",
     jobTitle: "",
-    dob: "",
+
     aadhar: "",
     address: "",
     highestQualification: "",
@@ -44,10 +44,9 @@ export default function JobOpenings() {
     photo: null,
     cv: null,
   });
-
   const [savedUser, setSavedUser] = useState<{ username: string; user_emailid: string; user_mobileno: string } | null>(null);
 
-  // ✅ Fetch saved user details from localStorage when page loads
+  // ✅ Load saved user from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -71,21 +70,16 @@ export default function JobOpenings() {
           },
         });
         const data = await res.json();
-        if (data.status) {
-          setJobs(data.data);
-        } else {
-          console.error("Failed to fetch jobs:", data.message);
-        }
+        if (data.status) setJobs(data.data);
+        else console.error("Failed to fetch jobs:", data.message);
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }
     };
     fetchJobs();
   }, []);
-  
 
-
-  // ✅ Open modal with pre-filled data if user exists
+  // ✅ Open modal form with prefilled data
   const handleOpenForm = (jobTitle: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -111,10 +105,53 @@ export default function JobOpenings() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log(formData);
-    alert("Form Submitted!");
-    setIsOpen(false);
+  // ✅ Submit form to API
+  const handleSubmit = async () => {
+    try {
+      if (!formData.photo || !formData.cv) {
+        alert("Please upload both photo and CV");
+        return;
+      }
+
+      const job = jobs.find((j) => j.job_title === formData.jobTitle);
+      if (!job) {
+        alert("Job not found");
+        return;
+      }
+
+      const data = new FormData();
+      data.append("jobid", job.job_id.toString());
+      data.append("applicantid", savedUser?.user_emailid || "");
+      data.append("full_name", formData.username);
+      data.append("mobileno", formData.user_mobileno);
+      data.append("emailid", formData.user_emailid);
+      data.append("aadharnumber", formData.aadhar);
+      data.append("applicant_address", formData.address);
+      data.append("highest_qualification", formData.highestQualification);
+      data.append("professional_qualification", formData.professionalQualification);
+      data.append("fileimg", formData.photo);
+      data.append("file", formData.cv);
+
+      const res = await fetch("https://njportal.thenoncoders.in/api/v1/apply_for_job", {
+        method: "POST",
+        body: data,
+        headers: {
+          "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
+        },
+      });
+
+      const result = await res.json();
+
+      if (result.status) {
+        alert("Application submitted successfully!");
+        setIsOpen(false);
+      } else {
+        alert("Failed to submit application: " + result.message);
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Something went wrong. Try again later.");
+    }
   };
 
   return (
@@ -123,7 +160,7 @@ export default function JobOpenings() {
         <h2 className="text-3xl md:text-4xl font-bold text-[#000]">Current Job Openings</h2>
       </div>
 
-      {/* ✅ Job Cards */}
+      {/* Job Cards */}
       <div className="container mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
         {jobs.length > 0 ? (
           jobs.map((job) => (
@@ -162,36 +199,23 @@ export default function JobOpenings() {
         )}
       </div>
 
-      {/* ✅ Modal Form */}
+      {/* Modal Form */}
       {isOpen && (
         <div className="fixed inset-0 bg-[#00000096] bg-opacity-20 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-2xl p-6 relative">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Application Form 
-            </h2>
+            <h2 className="text-2xl font-bold mb-6 text-center">Application Form</h2>
 
             {/* Step Indicators */}
             <div className="relative flex items-center justify-between mx-auto mb-6 px-4">
               {[1, 2, 3].map((step, index) => (
                 <div key={step} className="flex items-center">
                   <div
-                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${
-                      currentStep === step
-                        ? "bg-[#ed7900] text-white"
-                        : step < currentStep
-                        ? "bg-[#ed7900] text-white"
-                        : "bg-[#1A7EBD] text-white"
-                    }`}
+                    className={`w-15 h-15 rounded-full flex items-center justify-center font-semibold z-10 ${currentStep === step ? "bg-[#ed7900] text-white" : step < currentStep ? "bg-[#ed7900] text-white" : "bg-[#1A7EBD] text-white"
+                      }`}
                   >
                     {step}
                   </div>
-                  {index < 2 && (
-                    <div
-                      className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${
-                        currentStep > step ? "bg-blue-400" : "bg-gray-300"
-                      }`}
-                    ></div>
-                  )}
+                  {index < 2 && <div className={`flex-1 h-[3px] md:w-[201px] w-[60px] ${currentStep > step ? "bg-blue-400" : "bg-gray-300"}`}></div>}
                 </div>
               ))}
             </div>
@@ -203,22 +227,22 @@ export default function JobOpenings() {
                 <input type="tel" name="user_mobileno" placeholder="Phone" value={formData.user_mobileno} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
                 <input type="email" name="user_emailid" placeholder="Email" value={formData.user_emailid} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
                 <input type="text" name="jobTitle" value={formData.jobTitle} readOnly className="w-full p-2 bg-gray-100 text-sm border-b border-[#0000008a]" />
-                <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+
               </div>
             )}
 
             {/* Step 2 */}
             {currentStep === 2 && (
               <div className="space-y-4">
-                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]" />
-                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]" />
-                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full  p-2 text-sm  border-b border-[#0000008a]">
+                <input type="text" name="aadhar" placeholder="Aadhar Number" value={formData.aadhar} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" />
+                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]">
                   <option value="">Highest Qualification</option>
                   <option value="High School">High School</option>
                   <option value="Bachelor’s">Bachelor’s</option>
                   <option value="Master’s">Master’s</option>
                 </select>
-                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm  border-b border-[#0000008a]">
+                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]">
                   <option value="">Professional Qualification</option>
                   <option value="React">React</option>
                   <option value="Node.js">Node.js</option>
@@ -226,42 +250,56 @@ export default function JobOpenings() {
                 </select>
               </div>
             )}
-             {/* Step 3 */}
+
+            {/* Step 3 */}
             {currentStep === 3 && (
               <div className="space-y-4">
+                {/* Photo Upload */}
                 <div>
                   <label className="block mb-1">Upload Photo</label>
-                  <input type="file" name="photo" accept="image/*" onChange={handleFileChange} className="w-full border p-2 rounded" />
+                  <div className="flex items-center gap-4">
+                    <label className="bg-[#1A7EBD] text-white px-4 py-2 rounded cursor-pointer">
+                      {formData.photo ? "Change Photo" : "Choose Photo"}
+                      <input
+                        type="file"
+                        name="photo"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {formData.photo && <span className="text-gray-700">{formData.photo.name}</span>}
+                  </div>
                 </div>
+
+                {/* CV Upload */}
                 <div>
                   <label className="block mb-1">Upload CV</label>
-                  <input type="file" name="cv" accept=".pdf,.doc,.docx" onChange={handleFileChange} className="w-full border p-2 rounded" />
+                  <div className="flex items-center gap-4">
+                    <label className="bg-[#1A7EBD] text-white px-4 py-2 rounded cursor-pointer">
+                      {formData.cv ? "Change CV" : "Choose CV"}
+                      <input
+                        type="file"
+                        name="cv"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                    {formData.cv && <span className="text-gray-700">{formData.cv.name}</span>}
+                  </div>
                 </div>
               </div>
             )}
 
-
+            {/* Navigation Buttons */}
             <div className="flex justify-between mt-6">
-              {currentStep > 1 && (
-                <button onClick={handlePrev} className="bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">
-                  Previous →
-                </button>
-              )}
-              {currentStep < 3 && (
-                <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">
-                  Next →
-                </button>
-              )}
-              {currentStep === 3 && (
-                <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">
-                  Submit →
-                </button>
-              )}
+              {currentStep > 1 && <button onClick={handlePrev} className="bg-[#1A7EBD] text-white font-medium px-5 py-2 rounded-full">Previous →</button>}
+              {currentStep < 3 && <button onClick={handleNext} className="bg-[#000] text-white font-medium px-5 py-2 rounded-full">Next →</button>}
+              {currentStep === 3 && <button onClick={handleSubmit} className="bg-green-600 text-white font-medium px-5 py-2 rounded-full">Submit & Pay →</button>}
             </div>
 
-            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">
-              X
-            </button>
+            <button onClick={() => setIsOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 font-bold">X</button>
           </div>
         </div>
       )}
