@@ -36,7 +36,6 @@ export default function JobOpenings() {
     user_mobileno: "",
     user_emailid: "",
     jobTitle: "",
-
     aadhar: "",
     address: "",
     highestQualification: "",
@@ -84,6 +83,7 @@ export default function JobOpenings() {
     setFormData((prev) => ({
       ...prev,
       jobTitle,
+
       username: savedUser?.username || "",
       user_emailid: savedUser?.user_emailid || "",
       user_mobileno: savedUser?.user_mobileno || "",
@@ -121,7 +121,7 @@ export default function JobOpenings() {
 
       const data = new FormData();
       data.append("jobid", job.job_id.toString());
-      data.append("applicantid", savedUser?.user_emailid || "");
+      data.append("applicantid", "2");
       data.append("full_name", formData.username);
       data.append("mobileno", formData.user_mobileno);
       data.append("emailid", formData.user_emailid);
