@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Users, GraduationCap, Award } from "lucide-react"; // icons
+import { BookOpen, Users, GraduationCap, Award, Lightbulb } from "lucide-react"; // icons
 
 export default function WhyChoose() {
   const features = [
@@ -26,7 +26,7 @@ export default function WhyChoose() {
        color: "bg-[#ed7900]",
     },
     {
-      icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
+      icon: <Lightbulb  className="w-12 h-12 mx-auto mb-3 text-white" />,
       title: "Holistic Education",
       color: "bg-[#1A7EBD]",
     },
