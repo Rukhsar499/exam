@@ -65,6 +65,7 @@ export default function LoginForm() {
 
       if (res.status && res.login_data) {
         const userData = {
+          // applicantid: res.login_data.id,
           userid: res.login_data.userid,
           username: res.login_data.username,
           user_emailid: res.login_data.user_emailid,

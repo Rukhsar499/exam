@@ -14,6 +14,7 @@ interface Job {
 }
 
 interface FormDataType {
+   userid: string;
   username: string;
   user_mobileno: string;
   user_emailid: string;
@@ -32,6 +33,7 @@ export default function JobOpenings() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormDataType>({
+    userid: "",
     username: "",
     user_mobileno: "",
     user_emailid: "",
@@ -43,7 +45,7 @@ export default function JobOpenings() {
     photo: null,
     cv: null,
   });
-  const [savedUser, setSavedUser] = useState<{ username: string; user_emailid: string; user_mobileno: string } | null>(null);
+  const [savedUser, setSavedUser] = useState<{userid: number; username: string; user_emailid: string; user_mobileno: string } | null>(null);
 
   // ✅ Load saved user from localStorage
   useEffect(() => {
@@ -129,7 +131,7 @@ export default function JobOpenings() {
 
       const data = new FormData();
       data.append("jobid", job.job_id.toString());
-      data.append("applicantid", "2");
+      data.append("applicantid", savedUser?.userid?.toString() || "");
       data.append("full_name", formData.username);
       data.append("mobileno", formData.user_mobileno);
       data.append("emailid", formData.user_emailid);
