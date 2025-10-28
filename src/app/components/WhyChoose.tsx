@@ -6,27 +6,28 @@ export default function WhyChoose() {
   const features = [
     {
       icon: <BookOpen className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Comprehensive Study Material",
+      title: "Innovative Learning",
       color: "bg-[#1A7EBD]",
     },
     {
-      icon: <GraduationCap className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Best Integrated Teaching",
+      icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
+      title: "Supportive Environment",
        color: "bg-[#ed7900]",
     },
     {
-      icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Experienced Faculty",
+      icon: <GraduationCap className="w-12 h-12 mx-auto mb-3 text-white" />,
+      
+      title: "Career Growth",
       color: "bg-[#1A7EBD]",
     },
     {
       icon: <Award className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Scholarship Through N-ACST",
+      title: "Collaborative Culture",
        color: "bg-[#ed7900]",
     },
     {
       icon: <Users className="w-12 h-12 mx-auto mb-3 text-white" />,
-      title: "Experienced Faculty",
+      title: "Holistic Education",
       color: "bg-[#1A7EBD]",
     },
   ];

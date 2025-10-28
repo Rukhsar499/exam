@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { FaFacebookF,  FaInstagram } from "react-icons/fa";
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { MdPhone, MdEmail } from "react-icons/md";
 
 type LinkItem = {
@@ -22,9 +22,9 @@ const legalLinks: LinkItem[] = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about-us" },
     { name: "Contact Us", href: "/contact" },
-    
+
     // { name: "Cancellation Policy", href: "/cancellation-policy" },
-   
+
 ];
 
 const socialLinks: SocialItem[] = [
@@ -48,11 +48,12 @@ const Footer: React.FC = () => {
                         <div className="flex flex-col">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Narayana Job Portal</h2>
                             <p className="text-white text-[16px]">
-                                Our cutting-edge football turf is in multiple locations across West Bengal. 
+                                Join a community that shapes young minds and inspires innovation. At Narayana, every teacher grows while helping students dream big. Experience a workplace filled with purpose, passion, and progress.
+
                             </p>
                         </div>
                     </div>
-                     <div className="md:w-[10%] w-full">
+                    <div className="md:w-[10%] w-full">
                         <div className="flex flex-col items-start justify-start text-left">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Links</h2>
                             <ul className="space-y-2 text-white text-[16px]">
@@ -71,7 +72,7 @@ const Footer: React.FC = () => {
                         <div className=" flex flex-col items-start justify-start text-left">
                             <h2 className="text-[#fff] mb-6 text-[21px] font-semibold">Contact Us</h2>
                             <p className="text-white text-[16px]">
-                               Plot No IIF/11, Unit No. ESNTB0202, Ecospace Business Park, Rajarhat, New Town
+                               123 Address kolkata - 700039
                             </p>
                             <div className="pt-4">
                                 <ul className="space-y-2 text-white text-[16px] ">
@@ -86,7 +87,7 @@ const Footer: React.FC = () => {
                         </div>
                     </div>
 
-                   
+
 
                     <div className="md:w-[15%] w-full">
                         <div className="flex flex-col items-start justify-start text-left">

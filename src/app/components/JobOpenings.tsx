@@ -78,19 +78,27 @@ export default function JobOpenings() {
     fetchJobs();
   }, []);
 
-  // ✅ Open modal form with prefilled data
+  
   const handleOpenForm = (jobTitle: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      jobTitle,
+  // 🔒 Check if user is logged in
+  if (!savedUser) {
+    alert("Please login first to apply for a job.");
+    return; // stop here if not logged in
+  }
 
-      username: savedUser?.username || "",
-      user_emailid: savedUser?.user_emailid || "",
-      user_mobileno: savedUser?.user_mobileno || "",
-    }));
-    setIsOpen(true);
-    setCurrentStep(1);
-  };
+  
+  setFormData((prev) => ({
+    ...prev,
+    jobTitle,
+    username: savedUser?.username || "",
+    user_emailid: savedUser?.user_emailid || "",
+    user_mobileno: savedUser?.user_mobileno || "",
+  }));
+
+  // ✅ Open form modal
+  setIsOpen(true);
+  setCurrentStep(1);
+};
 
   const handleNext = () => setCurrentStep((prev) => Math.min(prev + 1, 3));
   const handlePrev = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
