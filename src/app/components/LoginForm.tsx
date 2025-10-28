@@ -34,64 +34,66 @@ export default function LoginForm() {
   const [alreadyLogged, setAlreadyLogged] = useState<string | null>(null);
 
   // Check if user already logged in
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setAlreadyLogged(parsedUser.username);
-    }
-  }, [setUser]);
+ useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    setUser(parsedUser);
+  }
+}, [setUser]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (user) {
-      setAlreadyLogged(user.username);
-      return;
+  e.preventDefault();
+
+  // ✅ If user is already logged in and trying to log in again, show message
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
+    setAlreadyLogged(parsedUser.username);
+    return;
+  }
+
+  setLoading(true);
+  setErrorMessage("");
+
+  try {
+    const res = await apiPost<ApiResponse, LoginFormData>(
+      "v1/validate_login",
+      formData
+    );
+
+    if (res.status && res.login_data) {
+      const userData = {
+        userid: res.login_data.userid,
+        username: res.login_data.username,
+        user_emailid: res.login_data.user_emailid,
+        user_mobileno: res.login_data.user_mobileno,
+      };
+
+      // ✅ Save to localStorage & context
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      setWelcomeUser(res.login_data.username);
+
+      // ✅ Auto-refresh after 1 second
+      setTimeout(() => {
+        setWelcomeUser(null);
+        window.location.reload();
+      }, 1000);
+    } else {
+      setErrorMessage(res.message || "Login failed");
     }
-
-    setLoading(true);
-    setErrorMessage("");
-
-    try {
-      const res = await apiPost<ApiResponse, LoginFormData>(
-        "v1/validate_login",
-        formData
-      );
-
-      if (res.status && res.login_data) {
-        const userData = {
-          // applicantid: res.login_data.id,
-          userid: res.login_data.userid,
-          username: res.login_data.username,
-          user_emailid: res.login_data.user_emailid,
-          user_mobileno: res.login_data.user_mobileno,
-        };
-
-        // Save to localStorage & context
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
-        setWelcomeUser(res.login_data.username);
-
-        // Auto-close popup and refresh page
-        setTimeout(() => {
-          setWelcomeUser(null);
-          window.location.reload(); 
-        }, 1000);
-      } else {
-        setErrorMessage(res.message || "Login failed");
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error) setErrorMessage(err.message);
-      else setErrorMessage("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (err: unknown) {
+    if (err instanceof Error) setErrorMessage(err.message);
+    else setErrorMessage("Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (alreadyLogged) {
     return (
