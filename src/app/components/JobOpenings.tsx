@@ -160,7 +160,7 @@ export default function JobOpenings() {
           alert("Application ID not returned from server!");
           return;
         }
-
+       console.log("applicationId:", applicationId )
         // 🟢 Step 2: Initiate payment after application submission
         const paymentRes = await fetch("/api/initiate-payment", {
           method: "POST",
@@ -175,6 +175,8 @@ export default function JobOpenings() {
 
         const paymentData = await paymentRes.json();
         console.log("Payment Response:", paymentData);
+
+      
 
         if (paymentData.success && paymentData.redirect) {
           window.location.href = paymentData.redirect;
