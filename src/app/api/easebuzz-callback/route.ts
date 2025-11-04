@@ -18,29 +18,42 @@ export async function POST(req: Request) {
     const backendResponse = await res.json();
     console.log("Backend confirm_payment_ezb Response:", backendResponse);
 
-    // ✅ After saving payment data, redirect to payment-status page
     const txnid = entries.txnid || backendResponse?.data?.txnid || "";
-    const status = entries.status || backendResponse?.data?.status || "failed";
-    const paymentstatus = entries.payment_status || backendResponse?.data?.payment_status || "failed";
+    const paymentstatus =
+      entries.payment_status || backendResponse?.data?.payment_status || "failed";
 
-    console.log("Error in Easebuzz Callback:",txnid+": status-"+status+": payment_status-"+paymentstatus);
-    if(paymentstatus=="Success")
-    {
-        const sredirectUrl = `${process.env.NEXT_PUBLIC_APP_URL}/payment-success`;
-        return NextResponse.redirect(sredirectUrl);
-       }
-    else
-        {
-        const fredirectUrl = `${process.env.NEXT_PUBLIC_APP_URL}/payment-failed`;
-        return NextResponse.redirect(fredirectUrl);
-        }
+    // ✅ Base URL safety (detect if env missing)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.trim() || "http://localhost:3000/";
 
+    // console.log("🌐 Using base URL:", baseUrl);
+    // console.log("📦 Payment Status:", paymentstatus);
+  //  window.location.href="http://localhost:3000/payment-failed"
+    // ✅ Build redirect URL
+    let redirectUrl = "";
+    if (paymentstatus.toLowerCase() === "success") {
+      redirectUrl = `${baseUrl}/payment-success`;
+    } else {
+      redirectUrl = `${baseUrl}/payment-failed`;
+    }
 
-    //const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/payment-status?txnid=${txnid}&status=${status}`;
-//const redirectUrl = `http://localhost:3000/confirm-payment?txnid=${txnid}&status=${status}`;
-    //return NextResponse.redirect(redirectUrl);
+    console.log("➡️ Redirecting to:", redirectUrl);
+
+    // ✅ Validate before redirect
+    // try {
+    //   new URL(redirectUrl);
+    // } catch (err) {
+    //   console.error("❌ Invalid redirect URL generated:", redirectUrl);
+    //   return NextResponse.json({ error: "Invalid redirect URL", redirectUrl, baseUrl });
+    // }
+
+    // Redirect to frontend page
+    // return NextResponse.redirect(redirectUrl);
+    return new Response(null, {
+      status: 302,
+      headers: { Location: redirectUrl },
+    });
   } catch (err) {
-    console.error("Error in Easebuzz Callback:", err);
+    console.error("🔥 Error in Easebuzz Callback:", err);
     return NextResponse.json({ error: "callback error" });
   }
 }
