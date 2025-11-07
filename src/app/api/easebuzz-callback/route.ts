@@ -31,9 +31,9 @@ export async function POST(req: Request) {
     // ✅ Build redirect URL
     let redirectUrl = "";
     if (paymentstatus.toLowerCase() === "success") {
-      redirectUrl = `${baseUrl}/payment-success`;
+      redirectUrl = `${baseUrl}payment-success`;
     } else {
-      redirectUrl = `${baseUrl}/payment-failed`;
+      redirectUrl = `${baseUrl}payment-failed`;
     }
 
     console.log("➡️ Redirecting to:", redirectUrl);
