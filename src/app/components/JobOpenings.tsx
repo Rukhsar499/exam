@@ -24,6 +24,10 @@ interface FormDataType {
   address: string;
   highestQualification: string;
   professionalQualification: string;
+  teachingExperience: string;
+  relativeWorking: string;
+  relativeName: string;
+  relativePhone: string;
   photo: File | null;
   cv: File | null;
 }
@@ -43,6 +47,10 @@ export default function JobOpenings() {
     address: "",
     highestQualification: "",
     professionalQualification: "",
+    teachingExperience: "",
+    relativeWorking: "",
+    relativeName: "",
+    relativePhone: "",
     photo: null,
     cv: null,
   });
@@ -315,21 +323,114 @@ export default function JobOpenings() {
                   <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
                 )}
 
-                <input type="text" name="address" placeholder="Address" value={formData.address} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" required />
-                <select name="highestQualification" value={formData.highestQualification} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" required>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full p-2 text-sm border-b border-[#0000008a]"
+                  required
+                />
+
+                <select
+                  name="highestQualification"
+                  value={formData.highestQualification}
+                  onChange={handleChange}
+                  className="w-full p-2 text-sm border-b border-[#0000008a]"
+                  required
+                >
                   <option value="">Highest Qualification</option>
                   <option value="High School">High School</option>
                   <option value="Bachelor’s">Bachelor’s</option>
                   <option value="Master’s">Master’s</option>
                 </select>
-                <select name="professionalQualification" value={formData.professionalQualification} onChange={handleChange} className="w-full p-2 text-sm border-b border-[#0000008a]" required>
+
+                <select
+                  name="professionalQualification"
+                  value={formData.professionalQualification}
+                  onChange={handleChange}
+                  className="w-full p-2 text-sm border-b border-[#0000008a]"
+                  required
+                >
                   <option value="">Professional Qualification</option>
                   <option value="React">React</option>
                   <option value="Node.js">Node.js</option>
                   <option value="Laravel">Laravel</option>
                 </select>
+
+                <select
+                  name="teachingExperience"
+                  value={formData.teachingExperience}
+                  onChange={handleChange}
+                  className="w-full p-2 text-sm border-b border-[#0000008a]"
+                  required
+                >
+                  <option value="">Teaching Experience</option>
+                  <option value="Fresher">Fresher</option>
+                  <option value="1-2yrs">1-2yrs</option>
+                  <option value="2-3yrs">2-3yrs</option>
+                  <option value="3-5yrs">3-5yrs</option>
+                  <option value="5-10yrs">5-10yrs</option>
+                  <option value="10 or above">10 or above</option>
+                </select>
+
+                {/* ✅ Relative Working in Narayana */}
+                <div className="flex items-center justify-between space-x-4 mt-4">
+                  <label className="text-sm font-medium text-gray-700">
+                    Relative working in Narayana?
+                  </label>
+                  <div className="flex items-center  space-x-2">
+                    <label className="flex items-center space-x-1">
+                      <input
+                        type="radio"
+                        name="relativeWorking"
+                        value="yes"
+                        checked={formData.relativeWorking === "yes"}
+                        onChange={handleChange}
+                      />
+                      <span className="text-sm">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-1">
+                      <input
+                        type="radio"
+                        name="relativeWorking"
+                        value="no"
+                        checked={formData.relativeWorking === "no"}
+                        onChange={handleChange}
+                      />
+                      <span className="text-sm">No</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* ✅ Show inputs only if user selects Yes */}
+                {formData.relativeWorking === "yes" && (
+                  <div className="flex gap-4 mt-2">
+                    <input
+                      type="text"
+                      name="relativeName"
+                      placeholder="Relative’s Name"
+                      value={formData.relativeName}
+                      onChange={handleChange}
+                      className="w-1/2 p-2 text-sm border-b border-[#0000008a]"
+                    />
+                    <input
+                      type="text"
+                      name="relativePhone"
+                      placeholder="Relative’s Phone"
+                      value={formData.relativePhone}
+                      onChange={handleChange}
+                      className="w-1/2 p-2 text-sm border-b border-[#0000008a]"
+                      maxLength={10}
+                    />
+                  </div>
+                )}
               </div>
             )}
+
+
+
 
             {/* Step 3 */}
             {currentStep === 3 && (
