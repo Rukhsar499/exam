@@ -178,7 +178,7 @@ export default function RegisterFormWithOTP() {
 
               <button
                 type="submit"
-                className={`w-full bg-green-500 text-white px-4 py-2 rounded ${otpLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`w-full h-60 bg-green-500 text-white px-4 py-2 rounded ${otpLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 disabled={otpLoading}
               >
                 {otpLoading ? "Verifying..." : "Verify OTP"}
@@ -193,7 +193,9 @@ export default function RegisterFormWithOTP() {
                   }`}
                 >
                   {otpMessage}
+                  Please enter the OTP sent to your registered mail id
                 </p>
+                
               )}
             </form>
 

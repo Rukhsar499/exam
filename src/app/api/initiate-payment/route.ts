@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       console.log("✅ Access key received:", result.data.access_key.data);
       return NextResponse.json({
         success: true,
-        redirect: `https://pay.easebuzz.in/pay/${result.data.access_key.data}`,
+        redirect: `https://testpay.easebuzz.in/pay/${result.data.access_key.data}`,
       });
     } else {
       console.log("❌ Payment initiation failed — no access key");
