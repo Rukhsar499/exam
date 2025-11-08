@@ -24,10 +24,10 @@ interface FormDataType {
   address: string;
   highestQualification: string;
   professionalQualification: string;
-  teachingExperience: string;
-  relativeWorking: string;
-  relativeName: string;
-  relativePhone: string;
+  teaching_exp: string;
+  relative_working: string;
+  relative_name: string;
+  relative_number: string;
   photo: File | null;
   cv: File | null;
 }
@@ -47,10 +47,10 @@ export default function JobOpenings() {
     address: "",
     highestQualification: "",
     professionalQualification: "",
-    teachingExperience: "",
-    relativeWorking: "",
-    relativeName: "",
-    relativePhone: "",
+    teaching_exp: "",
+    relative_working: "",
+    relative_name: "",
+   relative_number: "",
     photo: null,
     cv: null,
   });
@@ -181,6 +181,10 @@ export default function JobOpenings() {
       data.append("applicant_address", formData.address);
       data.append("highest_qualification", formData.highestQualification);
       data.append("professional_qualification", formData.professionalQualification);
+      data.append("teaching_exp", formData.teaching_exp);
+      data.append("relative_working", formData.relative_working);
+      data.append("relative_name", formData.relative_name);
+      data.append("relative_number", formData.relative_number);
       data.append("fileimg", formData.photo);
       data.append("file", formData.cv);
 
@@ -360,8 +364,8 @@ export default function JobOpenings() {
                 </select>
 
                 <select
-                  name="teachingExperience"
-                  value={formData.teachingExperience}
+                  name="teaching_exp"
+                  value={formData.teaching_exp}
                   onChange={handleChange}
                   className="w-full p-2 text-sm border-b border-[#0000008a]"
                   required
@@ -384,9 +388,9 @@ export default function JobOpenings() {
                     <label className="flex items-center space-x-1">
                       <input
                         type="radio"
-                        name="relativeWorking"
+                        name="relative_working"
                         value="yes"
-                        checked={formData.relativeWorking === "yes"}
+                        checked={formData.relative_working === "yes"}
                         onChange={handleChange}
                       />
                       <span className="text-sm">Yes</span>
@@ -394,9 +398,9 @@ export default function JobOpenings() {
                     <label className="flex items-center space-x-1">
                       <input
                         type="radio"
-                        name="relativeWorking"
+                        name="relative_working"
                         value="no"
-                        checked={formData.relativeWorking === "no"}
+                        checked={formData.relative_working === "no"}
                         onChange={handleChange}
                       />
                       <span className="text-sm">No</span>
@@ -405,21 +409,21 @@ export default function JobOpenings() {
                 </div>
 
                 {/* ✅ Show inputs only if user selects Yes */}
-                {formData.relativeWorking === "yes" && (
+                {formData.relative_working === "yes" && (
                   <div className="flex gap-4 mt-2">
                     <input
                       type="text"
-                      name="relativeName"
+                      name="relative_name"
                       placeholder="Relative’s Name"
-                      value={formData.relativeName}
+                      value={formData.relative_name}
                       onChange={handleChange}
                       className="w-1/2 p-2 text-sm border-b border-[#0000008a]"
                     />
                     <input
                       type="text"
-                      name="relativePhone"
+                      name="relative_number"
                       placeholder="Relative’s Phone"
-                      value={formData.relativePhone}
+                      value={formData.relative_number}
                       onChange={handleChange}
                       className="w-1/2 p-2 text-sm border-b border-[#0000008a]"
                       maxLength={10}
