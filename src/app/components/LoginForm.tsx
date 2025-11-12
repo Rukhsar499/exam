@@ -78,6 +78,7 @@ export default function LoginForm() {
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
       setWelcomeUser(res.login_data.username);
+      
 
       // ✅ Auto-refresh after 1 second
       setTimeout(() => {
