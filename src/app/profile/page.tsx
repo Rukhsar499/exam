@@ -520,9 +520,7 @@ export default function ProfilePage() {
                   className={inputBase}
                 />
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
+               <div>
                   <label className="block text-sm font-medium text-gray-700">State *</label>
                   <select
                     name="stateid"
@@ -556,7 +554,7 @@ export default function ProfilePage() {
                     className={inputBase}
                   />
                 </div>
-              </div>
+              
 
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
