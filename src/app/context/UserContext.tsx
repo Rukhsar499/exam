@@ -43,6 +43,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         localStorage.removeItem("user"); // clear saved data
         setUser(null); // clear context
+        localStorage.removeItem("user_info");
     };
 
     if (!isLoaded) return null;

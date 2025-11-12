@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
-
+interface ApiState {
+  stateid: number | string;
+  statename: string;
+}
 
 interface UserProfile {
   userid?: string;
@@ -65,7 +68,7 @@ export default function ProfilePage() {
 
         if (data?.status && Array.isArray(data.data)) {
           // ✅ Map API data to match your select dropdown
-          const formatted = data.data.map((s: any) => ({
+          const formatted = data.data.map((s: ApiState) => ({
             id: String(s.stateid),
             name: s.statename,
           }));
@@ -219,7 +222,8 @@ export default function ProfilePage() {
     ];
 
     for (const k of required) {
-      if (!String((user as any)[k] ?? "").trim()) return `${k.replace(/_/g, " ")} is required`;
+     if (!String(((user as unknown) as Record<string, unknown>)[k] ?? "").trim())
+  return `${k.replace(/_/g, " ")} is required`;
     }
 
     if (!photoFile && !user.fileimg) return "Please select profile photo";
@@ -520,41 +524,41 @@ export default function ProfilePage() {
                   className={inputBase}
                 />
               </div>
-               <div>
-                  <label className="block text-sm font-medium text-gray-700">State *</label>
-                  <select
-                    name="stateid"
-                    value={user.stateid}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    required
-                    className={inputBase}
-                  >
-                    <option value="">Select State</option>
-                    {states.length > 0 ? (
-                      states.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Loading states...</option>
-                    )}
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">State *</label>
+                <select
+                  name="stateid"
+                  value={user.stateid}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  required
+                  className={inputBase}
+                >
+                  <option value="">Select State</option>
+                  {states.length > 0 ? (
+                    states.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading states...</option>
+                  )}
+                </select>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Pincode *</label>
-                  <input
-                    name="pincode"
-                    value={user.pincode}
-                    onChange={handleChange}
-                    readOnly={!isEditing}
-                    required
-                    className={inputBase}
-                  />
-                </div>
-              
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Pincode *</label>
+                <input
+                  name="pincode"
+                  value={user.pincode}
+                  onChange={handleChange}
+                  readOnly={!isEditing}
+                  required
+                  className={inputBase}
+                />
+              </div>
+
 
               <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { apiPost } from "../../lib/apiClient";
 
+
 interface RegisterFormData {
   name: string;
   email: string;
@@ -183,7 +184,7 @@ export default function RegisterFormWithOTP() {
 
       {/* OTP Modal */}
       {showOTPModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-[#00000052] bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow max-w-sm w-full relative">
             <h2 className="text-lg font-semibold mb-4 text-center">
               Enter OTP

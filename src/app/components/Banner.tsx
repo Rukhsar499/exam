@@ -9,11 +9,17 @@ export default function Banner() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("user"); // 🔄 use same key as LoginForm
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
+  const token = localStorage.getItem("user"); // 🔄 use same key as LoginForm
+  if (token) {
+    setIsLoggedIn(true);
+  }
+
+  // ✅ Registration ke baad auto-login ke liye
+  const registeredUser = localStorage.getItem("user_info");
+  if (registeredUser) {
+    setIsLoggedIn(true);
+  }
+}, []);
 
   return (
     <section

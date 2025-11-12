@@ -7,8 +7,10 @@ import { useState, useEffect, useRef } from "react";
 export default function Header() {
   const { user, logout } = useUser();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [displayName, setDisplayName] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // click outside handler
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -18,6 +20,23 @@ export default function Header() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // ✅ handle showing name from context or localStorage
+  useEffect(() => {
+    if (user?.username) {
+      setDisplayName(user.username);
+    } else {
+      const storedUser = localStorage.getItem("user_info");
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          setDisplayName(parsed.name || parsed.username || "");
+        } catch (err) {
+          console.error("Error parsing user_info:", err);
+        }
+      }
+    }
+  }, [user]);
 
   return (
     <header className="fixed w-full flex items-center justify-between px-6 py-3 bg-white shadow-md z-50">
@@ -30,7 +49,7 @@ export default function Header() {
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
             <UserCircle className="w-6 h-6 text-gray-700" />
-            <span className="text-gray-800 font-medium">{user ? user.username : ""}</span>
+            <span className="text-gray-800 font-medium">{displayName}</span>
           </div>
 
           {isDropdownOpen && (
@@ -44,8 +63,8 @@ export default function Header() {
               <button
                 className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm"
                 onClick={() => {
-                  logout(); // context logout
-                  window.location.reload(); // refresh page
+                  logout();
+                  window.location.reload();
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" /> Logout
