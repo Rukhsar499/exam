@@ -25,16 +25,10 @@ interface UserProfile {
   file?: string;
 }
 
-const STATIC_STATES = [
-  { id: "1", name: "Uttar Pradesh" },
-  { id: "2", name: "Delhi" },
-  { id: "3", name: "Maharashtra" },
-  { id: "4", name: "Karnataka" },
-  { id: "5", name: "Tamil Nadu" },
-];
+
 
 export default function ProfilePage() {
-  
+
   const [user, setUser] = useState<UserProfile>({
     userid: "1",
     referby: "INT",
@@ -54,24 +48,57 @@ export default function ProfilePage() {
     stateid: "",
     pincode: "",
   });
+  const [states, setStates] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    async function fetchStates() {
+      try {
+        const res = await fetch("https://njportal.thenoncoders.in/api/v1/get_statelist", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
+          },
+        });
+
+        const data = await res.json();
+
+        if (data?.status && Array.isArray(data.data)) {
+          // ✅ Map API data to match your select dropdown
+          const formatted = data.data.map((s: any) => ({
+            id: String(s.stateid),
+            name: s.statename,
+          }));
+
+          setStates(formatted);
+        } else {
+          console.warn("Unexpected state list response", data);
+        }
+      } catch (err) {
+        console.error("Error fetching states:", err);
+      }
+    }
+
+    fetchStates();
+  }, []);
 
   // Local Storage se data load karne ke liye
-useEffect(() => {
-  if (typeof window !== "undefined" && window.localStorage) {
-    const storedData = localStorage.getItem("user_info");
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const storedData = localStorage.getItem("user_info");
 
-    if (storedData) {
-      const userInfo = JSON.parse(storedData);
-      setUser((prev) => ({
-        ...prev,
-        full_name: userInfo.name || prev.full_name,
-        mobileno: userInfo.mobile_no || prev.mobileno,
-        emailid: userInfo.email || prev.emailid,
-        userid: userInfo.user_id || prev.userid,
-      }));
+      if (storedData) {
+        const userInfo = JSON.parse(storedData);
+        setUser((prev) => ({
+          ...prev,
+          full_name: userInfo.name || prev.full_name,
+          mobileno: userInfo.mobile_no || prev.mobileno,
+          emailid: userInfo.email || prev.emailid,
+          userid: userInfo.user_id || prev.userid,
+        }));
+      }
     }
-  }
-}, []); 
+  }, []);
 
   const [isEditing, setIsEditing] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
@@ -84,9 +111,9 @@ useEffect(() => {
   // Optional: fetch profile to prefill (uncomment or keep)
   useEffect(() => {
     if (!user.userid || user.userid === "1") {
-    console.log("Waiting for actual user ID from localStorage...");
-    return;
-  }
+      console.log("Waiting for actual user ID from localStorage...");
+      return;
+    }
     async function fetchProfile() {
       try {
         const url = `https://njportal.thenoncoders.in/api/v1/get_myprofile?userid=${encodeURIComponent(
@@ -506,11 +533,15 @@ useEffect(() => {
                     className={inputBase}
                   >
                     <option value="">Select State</option>
-                    {STATIC_STATES.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
+                    {states.length > 0 ? (
+                      states.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option disabled>Loading states...</option>
+                    )}
                   </select>
                 </div>
 
