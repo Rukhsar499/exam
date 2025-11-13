@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { apiPost } from "../../lib/apiClient";
 import { useUser } from "../context/UserContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface LoginFormData {
   email: string;
@@ -111,33 +112,33 @@ export default function LoginForm() {
 
   // 🔹 Step 1: Generate OTP
   const handleGenerateOtp = async () => {
-  if (!email) return setPopupMsg("Please enter your registered email");
+    if (!email) return setPopupMsg("Please enter your registered email");
 
-  setPopupLoading(true);
-  setPopupMsg("");
+    setPopupLoading(true);
+    setPopupMsg("");
 
-  try {
-    const res = await apiPost<GenerateOtpResponse, { username: string; user_emailid: string }>(
-      "v1/generateotp",
-      {
-        username: email,   // dynamic: user input
-        user_emailid: email // dynamic: user input
+    try {
+      const res = await apiPost<GenerateOtpResponse, { username: string; user_emailid: string }>(
+        "v1/generateotp",
+        {
+          username: email,   // dynamic: user input
+          user_emailid: email // dynamic: user input
+        }
+      );
+
+      if (res.status) {
+        setPopupMsg("OTP sent to your email!");
+        setStep("reset");
+      } else {
+        setPopupMsg(res.message || "Email not found");
       }
-    );
-
-    if (res.status) {
-      setPopupMsg("OTP sent to your email!");
-      setStep("reset");
-    } else {
-      setPopupMsg(res.message || "Email not found");
+    } catch (err) {
+      console.error(err);
+      setPopupMsg("Something went wrong");
+    } finally {
+      setPopupLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-    setPopupMsg("Something went wrong");
-  } finally {
-    setPopupLoading(false);
-  }
-};
+  };
 
   // 🔹 Step 2: Update Password
   const handleUpdatePassword = async () => {
@@ -207,16 +208,17 @@ export default function LoginForm() {
             <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
           )}
         </div>
-
-        <div className="flex justify-between items-center text-[12px] text-[#0000008a]">
-          <p>New to Narayana Job Portal? Create an account by clicking Register</p>
-          <button
+        <button
             type="button"
             onClick={() => setShowForgotPopup(true)}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline text-sm"
           >
             Forgot Password?
           </button>
+
+        <div className=" text-[12px] text-[#0000008a]">
+          <p>New to Narayana Job Portal? Create an account by clicking Register</p>
+          
         </div>
 
         <div className="text-center">
@@ -233,75 +235,99 @@ export default function LoginForm() {
 
       {/* ✅ Forgot Password Popup */}
       {showForgotPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#0008] z-50">
-          <div className="bg-white w-[90%] max-w-sm rounded-lg shadow-xl p-6 text-center relative animate-fadeIn">
-            <button
-              onClick={() => setShowForgotPopup(false)}
-              className="absolute top-2 right-3 text-gray-500 hover:text-black"
-            >
-              ✖
-            </button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 rounded-sm">
+          <div className="bg-[#fff] w-[100%] h-[40%] max-w-2xl rounded-sm shadow-xl  relative animate-fadeIn flex flex-col md:flex-row">
 
-            <h2 className="text-lg font-semibold mb-3">Reset Password</h2>
+            {/* Left Image Section */}
+            <div className="md:w-1/2 flex items-center justify-center bg-[#1a7fbd]">
+               <Image src="/assets/img/careers-logo.webp" alt="Logo" width={200} height={40} className="rounded-sm  md:w-[150px] w-[170px]" />
+            </div>
 
-            {step === "email" && (
-              <>
-                <input
-                  type="email"
-                  placeholder="Enter your registered email"
-                  className="w-full border px-3 py-2 rounded mb-3 text-sm"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <button
-                  onClick={(e) => { e.preventDefault(); handleGenerateOtp(); }}
-                  disabled={popupLoading}
-                  className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"
-                >
-                  {popupLoading ? "Sending..." : "Send OTP"}
-                </button>
-              </>
-            )}
+            {/* Right Form Section */}
+            <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6 flex flex-col justify-center p-3">
+              <button
+                onClick={() => setShowForgotPopup(false)}
+                className="absolute -top-3 -right-3 text-[#fff] hover:text-black text-[12px] bg-[#ed7900] rounded-4xl p-5 w-3 h-3 flex justify-center align-middle leading-1 text-center"
+              >
+                ✖
+              </button>
 
-            {step === "reset" && (
-              <>
-                <input
-                  type="text"
-                  placeholder="Enter OTP"
-                  className="w-full border px-3 py-2 rounded mb-2 text-sm"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                />
-                <input
-                  type="password"
-                  placeholder="New Password"
-                  className="w-full border px-3 py-2 rounded mb-2 text-sm"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  className="w-full border px-3 py-2 rounded mb-3 text-sm"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <button
-                  onClick={handleUpdatePassword}
-                  disabled={popupLoading}
-                  className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700"
-                >
-                  {popupLoading ? "Updating..." : "Update Password"}
-                </button>
-              </>
-            )}
+              <h2 className="text-xl font-bold text-[#000] mb-2">Enter Mail</h2>
+              {/* <p className="text-[#fff] text-sm mb-4">
+                An OTP successfully sent to your email
+              </p> */}
 
-            {popupMsg && (
-              <p className="text-sm text-gray-600 mt-3">{popupMsg}</p>
-            )}
+              {step === "email" && (
+                <>
+                  <input
+                    type="email"
+                    placeholder="Enter your registered email"
+                    className="w-full text-[#000]  border-[#000] border-0 border-b px-3 py-2 rounded mb-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A7EBD]"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <button
+                    onClick={(e) => { e.preventDefault(); handleGenerateOtp(); }}
+                    disabled={popupLoading}
+                    className="bg-[#1A7EBD] hover:bg-[#0284c7] text-white font-medium w-full py-2 rounded transition-all"
+                  >
+                    {popupLoading ? "Sending..." : "Send OTP"}
+                  </button>
+                </>
+              )}
+
+              {step === "reset" && (
+                <>
+                  <div className="flex justify-between mb-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <input
+                        key={i}
+                        type="text"
+                        maxLength={1}
+                        className="w-10 h-10 text-center text-[#000]  border-[#000] border-0 border-b rounded focus:outline-none focus:ring-2 focus:ring-[#000]"
+                        value={otp[i] || ""}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, "");
+                          setOtp(otp.substr(0, i) + val + otp.substr(i + 1));
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  <input
+                    type="password"
+                    placeholder="New Password"
+                    className="w-full text-[#000]  border-[#000] border-0 border-b px-3 py-2 rounded mb-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#000]"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                  <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    className="w-full text-[#000]  border-[#000] border-0 border-b px-3 py-2 rounded mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#000]"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+
+                  <button
+                    onClick={handleUpdatePassword}
+                    disabled={popupLoading}
+                    className="bg-orange-400 hover:bg-orange-500 text-white font-medium w-full py-2 rounded transition-all"
+                  >
+                    {popupLoading ? "Updating..." : "Update Password"}
+                  </button>
+                </>
+              )}
+
+              {popupMsg && (
+                <p className="text-sm text-gray-500 mt-3">{popupMsg}</p>
+              )}
+            </div>
           </div>
         </div>
       )}
+
+
     </>
   );
 }
