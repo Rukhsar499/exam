@@ -1,6 +1,19 @@
 "use client";
 
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
+import ProtectedRoute from "../components/ProtectedRoute";
+
+export default function ProfilePage() {
+  return (
+    <ProtectedRoute>
+      <ProfilePageContent />
+    </ProtectedRoute>
+  );
+}
+
+
+
+
 interface ApiState {
   stateid: number | string;
   statename: string;
@@ -30,7 +43,7 @@ interface UserProfile {
 
 
 
-export default function ProfilePage() {
+ function ProfilePageContent() {
 
   const [user, setUser] = useState<UserProfile>({
     userid: "1",

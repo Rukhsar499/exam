@@ -13,10 +13,9 @@ export default function Header() {
   const router = useRouter();
 
   const handleLogout = () => {
-    logout();                  // your logout function
-    localStorage.removeItem("user_info"); 
-    router.push("/");          // redirect to home
-  };
+  logout();        // clears context + localStorage
+  router.push("/"); // redirect immediately
+};
 
   // click outside handler
   useEffect(() => {
@@ -31,23 +30,15 @@ export default function Header() {
 
   // ✅ handle showing name from context or localStorage
   useEffect(() => {
-    if (user?.username) {
-      setDisplayName(user.username);
-    } else {
-      const storedUser = localStorage.getItem("user_info");
-      if (storedUser) {
-        try {
-          const parsed = JSON.parse(storedUser);
-          setDisplayName(parsed.name || parsed.username || "");
-        } catch (err) {
-          console.error("Error parsing user_info:", err);
-        }
-      }
-    }
-  }, [user]);
+  if (user?.username) {
+    setDisplayName(user.username);
+  } else {
+    setDisplayName(""); // ✅ clear displayName immediately on logout
+  }
+}, [user]);
 
   return (
-    <header className="fixed w-full flex items-center justify-between px-6 py-3 bg-white shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full flex items-center justify-between px-6 py-3 bg-white shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Image src="/assets/img/logo.png" alt="Logo" width={240} height={40} className="md:w-[260px] w-[170px]" />
 

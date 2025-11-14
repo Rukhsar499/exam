@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { apiPost } from "../../lib/apiClient";
 import { useUser } from "../context/UserContext";
 import { useRouter } from "next/navigation";
@@ -30,8 +30,10 @@ interface UpdatePasswordResponse {
 }
 
 export default function LoginForm() {
+
   const { setUser } = useUser();
   const router = useRouter();
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
@@ -42,6 +44,7 @@ export default function LoginForm() {
   const [welcomeUser, setWelcomeUser] = useState<string | null>(null);
   const [alreadyLogged, setAlreadyLogged] = useState<string | null>(null);
 
+
   // Forgot Password popup
   const [showForgotPopup, setShowForgotPopup] = useState(false);
   const [step, setStep] = useState<"email" | "reset">("email");
@@ -51,6 +54,7 @@ export default function LoginForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [popupMsg, setPopupMsg] = useState("");
   const [popupLoading, setPopupLoading] = useState(false);
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -188,7 +192,9 @@ export default function LoginForm() {
     } finally {
       setPopupLoading(false);
     }
+
   };
+
 
   return (
     <>
@@ -293,13 +299,33 @@ export default function LoginForm() {
                     {Array.from({ length: 6 }).map((_, i) => (
                       <input
                         key={i}
+                        ref={(el) => { otpRefs.current[i] = el; }} // ✅ no return
                         type="text"
                         maxLength={1}
-                        className="w-10 h-10 text-center text-[#000]  border-[#000] border-0 border-b rounded focus:outline-none focus:ring-2 focus:ring-[#000]"
+                        className="w-10 h-10 text-center border-b rounded focus:outline-none focus:ring-2 focus:ring-[#000]"
                         value={otp[i] || ""}
                         onChange={(e) => {
                           const val = e.target.value.replace(/[^0-9]/g, "");
-                          setOtp(otp.substr(0, i) + val + otp.substr(i + 1));
+                          setOtp((prev) => {
+                            const newOtp = prev.substring(0, i) + val + prev.substring(i + 1);
+                            if (val && i < 5) otpRefs.current[i + 1]?.focus();
+                            return newOtp;
+                          });
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Backspace" && !otp[i] && i > 0) {
+                            otpRefs.current[i - 1]?.focus();
+                          }
+                        }}
+                        onPaste={(e) => {
+                          e.preventDefault();
+                          const paste = e.clipboardData.getData("text").slice(0, 6);
+                          setOtp(paste.padEnd(6, ""));
+                          paste.split("").forEach((digit, index) => {
+                            if (otpRefs.current[index]) otpRefs.current[index]!.value = digit;
+                          });
+                          const lastIndex = paste.length - 1;
+                          otpRefs.current[lastIndex]?.focus();
                         }}
                       />
                     ))}
