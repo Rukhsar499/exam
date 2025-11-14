@@ -3,12 +3,20 @@ import { useUser } from "../context/UserContext";
 import Image from "next/image";
 import { UserCircle, LogOut, User } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { user, logout } = useUser();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();                  // your logout function
+    localStorage.removeItem("user_info"); 
+    router.push("/");          // redirect to home
+  };
 
   // click outside handler
   useEffect(() => {
@@ -62,10 +70,7 @@ export default function Header() {
               </button>
               <button
                 className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100 text-sm"
-                onClick={() => {
-                  logout();
-                  window.location.reload();
-                }}
+                onClick={handleLogout}
               >
                 <LogOut className="w-4 h-4 mr-2" /> Logout
               </button>

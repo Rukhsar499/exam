@@ -91,16 +91,27 @@ export default function LoginForm() {
           user_mobileno: res.login_data.user_mobileno,
         };
 
+        // ✅ Step 1: Save normal user (existing code)
         localStorage.setItem("user", JSON.stringify(userData));
         setUser(userData);
+
+        // ✅ Step 2: ALSO save user_info (for Profile page compatibility)
+        const userInfo = {
+          user_id: res.login_data.userid,
+          name: res.login_data.username,
+          mobile_no: res.login_data.user_mobileno,
+          email: res.login_data.user_emailid,
+        };
+        localStorage.setItem("user_info", JSON.stringify(userInfo));
+
+        // ✅ Optional welcome message
         setWelcomeUser(res.login_data.username);
 
+        // ✅ Step 3: Reload after success
         setTimeout(() => {
           setWelcomeUser(null);
           window.location.reload();
         }, 1000);
-      } else {
-        setErrorMessage(res.message || "Login failed");
       }
     } catch (err: unknown) {
       if (err instanceof Error) setErrorMessage(err.message);
@@ -209,16 +220,16 @@ export default function LoginForm() {
           )}
         </div>
         <button
-            type="button"
-            onClick={() => setShowForgotPopup(true)}
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Forgot Password?
-          </button>
+          type="button"
+          onClick={() => setShowForgotPopup(true)}
+          className="text-blue-600 hover:underline text-sm"
+        >
+          Forgot Password?
+        </button>
 
         <div className=" text-[12px] text-[#0000008a]">
           <p>New to Narayana Job Portal? Create an account by clicking Register</p>
-          
+
         </div>
 
         <div className="text-center">
@@ -240,11 +251,11 @@ export default function LoginForm() {
 
             {/* Left Image Section */}
             <div className="md:w-1/2 flex items-center justify-center bg-[#1a7fbd]">
-               <Image src="/assets/img/careers-logo.webp" alt="Logo" width={200} height={40} className="rounded-sm  md:w-[150px] w-[170px]" />
+              <Image src="/assets/img/careers-logo.webp" alt="Logo" width={200} height={40} className="rounded-sm  md:w-[150px] w-[170px]" />
             </div>
 
             {/* Right Form Section */}
-            <div className="md:w-1/2 mt-4 md:mt-0 md:ml-6 flex flex-col justify-center p-3">
+            <div className="md:w-1/2 mt-4 md:mt-0  flex flex-col justify-center p-4">
               <button
                 onClick={() => setShowForgotPopup(false)}
                 className="absolute -top-3 -right-3 text-[#fff] hover:text-black text-[12px] bg-[#ed7900] rounded-4xl p-5 w-3 h-3 flex justify-center align-middle leading-1 text-center"

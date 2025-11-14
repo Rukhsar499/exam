@@ -85,21 +85,99 @@ export default function ProfilePage() {
     fetchStates();
   }, []);
 
-  // Local Storage se data load karne ke liye
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const storedData = localStorage.getItem("user_info");
 
       if (storedData) {
-        const userInfo = JSON.parse(storedData);
-        setUser((prev) => ({
-          ...prev,
-          full_name: userInfo.name || prev.full_name,
-          mobileno: userInfo.mobile_no || prev.mobileno,
-          emailid: userInfo.email || prev.emailid,
-          userid: userInfo.user_id || prev.userid,
-        }));
+        try {
+          const userInfo = JSON.parse(storedData);
+          const baseUrl = "https://njportal.thenoncoders.in/"; 
+
+          setUser((prev) => ({
+            ...prev,
+            full_name: userInfo.name || prev.full_name,
+            mobileno: userInfo.mobile_no || prev.mobileno,
+            emailid: userInfo.email || prev.emailid,
+            userid: userInfo.user_id || prev.userid,
+            dob: userInfo.dob || prev.dob,
+            aadharnumber: userInfo.aadharnumber || prev.aadharnumber,
+            applicant_address: userInfo.applicant_address || prev.applicant_address,
+            highest_qualification: userInfo.highest_qualification || prev.highest_qualification,
+            professional_qualification: userInfo.professional_qualification || prev.professional_qualification,
+            teaching_exp: userInfo.teaching_exp || prev.teaching_exp,
+            relative_working: userInfo.relative_working || prev.relative_working,
+            relative_name: userInfo.relative_name || prev.relative_name,
+            relative_number: userInfo.relative_number || prev.relative_number,
+            city_name: userInfo.city_name || prev.city_name,
+            stateid: userInfo.stateid || prev.stateid,
+            pincode: userInfo.pincode || prev.pincode,
+
+            // ✅ fix for image and file URLs
+            fileimg: userInfo.fileimg
+              ? userInfo.fileimg.startsWith("http")
+                ? userInfo.fileimg
+                : baseUrl + userInfo.fileimg
+              : "",
+            file: userInfo.file
+              ? userInfo.file.startsWith("http")
+                ? userInfo.file
+                : baseUrl + userInfo.file
+              : "",
+          }));
+        } catch (err) {
+          console.error("Error parsing localStorage user_info:", err);
+        }
       }
+    }
+  }, []);
+
+
+  // Local Storage se data load karne ke liye
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const storedData = localStorage.getItem("user_info");
+    if (!storedData) return;
+
+    try {
+      const userInfo = JSON.parse(storedData);
+      const baseUrl = "https://njportal.thenoncoders.in/";
+
+      setUser((prev) => ({
+        ...prev,
+        userid: userInfo.user_id || prev.userid,
+        referby: userInfo.referby || prev.referby,
+        full_name: userInfo.name || prev.full_name,
+        mobileno: userInfo.mobile_no || prev.mobileno,
+        emailid: userInfo.email || prev.emailid,
+        dob: userInfo.dob || prev.dob,
+        aadharnumber: userInfo.aadharnumber || prev.aadharnumber,
+        applicant_address: userInfo.applicant_address || prev.applicant_address,
+        highest_qualification: userInfo.highest_qualification || prev.highest_qualification,
+        professional_qualification: userInfo.professional_qualification || prev.professional_qualification,
+        teaching_exp: userInfo.teaching_exp || prev.teaching_exp,
+        relative_working: userInfo.relative_working || prev.relative_working,
+        relative_name: userInfo.relative_name || prev.relative_name,
+        relative_number: userInfo.relative_number || prev.relative_number,
+        city_name: userInfo.city_name || prev.city_name,
+        stateid: userInfo.stateid || prev.stateid,
+        pincode: userInfo.pincode || prev.pincode,
+
+        // ✅ Ensure correct URLs
+        fileimg: userInfo.fileimg
+          ? userInfo.fileimg.startsWith("http")
+            ? userInfo.fileimg
+            : baseUrl + userInfo.fileimg
+          : prev.fileimg,
+        file: userInfo.file
+          ? userInfo.file.startsWith("http")
+            ? userInfo.file
+            : baseUrl + userInfo.file
+          : prev.file,
+      }));
+    } catch (err) {
+      console.error("Error parsing localStorage user_info:", err);
     }
   }, []);
 
@@ -113,29 +191,25 @@ export default function ProfilePage() {
 
   // Optional: fetch profile to prefill (uncomment or keep)
   useEffect(() => {
-    if (!user.userid || user.userid === "1") {
-      console.log("Waiting for actual user ID from localStorage...");
-      return;
-    }
+    if (!user.userid || user.userid === "1") return;
+
     async function fetchProfile() {
       try {
-        const url = `https://njportal.thenoncoders.in/api/v1/get_myprofile?userid=${encodeURIComponent(
-          user.userid || "1"
-        )}`;
+        const res = await fetch(
+          `https://njportal.thenoncoders.in/api/v1/get_myprofile?userid=${encodeURIComponent(user.userid)}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
+            },
+          }
+        );
 
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.NEXT_PUBLIC_API_INTERNAL_KEY || "",
-          },
-        });
-
-        if (!res.ok) return; // ignore if fails
+        if (!res.ok) return;
         const payload = await res.json();
         const data = payload?.data ?? payload;
 
-        // set only known fields from response
         const allowed: (keyof UserProfile)[] = [
           "referby",
           "full_name",
@@ -162,17 +236,23 @@ export default function ProfilePage() {
           if (data?.[k] !== undefined && data?.[k] !== null) patched[k] = String(data[k]);
         });
 
+        const baseUrl = "https://njportal.thenoncoders.in/";
+        if (patched.fileimg && !patched.fileimg.startsWith("http"))
+          patched.fileimg = baseUrl + patched.fileimg;
+        if (patched.file && !patched.file.startsWith("http")) patched.file = baseUrl + patched.file;
+
+        // ✅ Update both state + localStorage
         setUser((prev) => ({ ...prev, ...patched }));
+        const updatedUser = { ...user, ...patched };
+        localStorage.setItem("user_info", JSON.stringify(updatedUser));
       } catch (err) {
         console.error("get_myprofile error:", err);
       }
     }
 
     fetchProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once
-
-  // cleanup preview URL on change/unmount
+  }, [user.userid]);
+   // ✅ Cleanup preview URLs
   useEffect(() => {
     return () => {
       if (photoPreview) URL.revokeObjectURL(photoPreview);
@@ -222,8 +302,8 @@ export default function ProfilePage() {
     ];
 
     for (const k of required) {
-     if (!String(((user as unknown) as Record<string, unknown>)[k] ?? "").trim())
-  return `${k.replace(/_/g, " ")} is required`;
+      if (!String(((user as unknown) as Record<string, unknown>)[k] ?? "").trim())
+        return `${k.replace(/_/g, " ")} is required`;
     }
 
     if (!photoFile && !user.fileimg) return "Please select profile photo";
@@ -280,6 +360,32 @@ export default function ProfilePage() {
 
       alert("Profile updated successfully!");
       if (payload?.data) setUser((p) => ({ ...p, ...payload.data }));
+
+      // ✅ ADD THIS BLOCK — save updated info to localStorage
+      const updatedUserInfo = {
+        user_id: user.userid,
+        name: user.full_name,
+        mobile_no: user.mobileno,
+        email: user.emailid,
+        dob: user.dob,
+        aadharnumber: user.aadharnumber,
+        applicant_address: user.applicant_address,
+        highest_qualification: user.highest_qualification,
+        professional_qualification: user.professional_qualification,
+        teaching_exp: user.teaching_exp,
+        relative_working: user.relative_working,
+        relative_name: user.relative_name,
+        relative_number: user.relative_number,
+        city_name: user.city_name,
+        stateid: user.stateid,
+        pincode: user.pincode,
+        fileimg: user.fileimg,
+        file: user.file,
+      };
+
+      localStorage.setItem("user_info", JSON.stringify(updatedUserInfo));
+      // ✅ END BLOCK
+
       setIsEditing(false);
     } catch (err) {
       console.error("submit error:", err);
